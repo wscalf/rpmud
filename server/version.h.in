@@ -1,0 +1,2 @@
+#define VERSION_MAJOR @rpmud_VERSION_MAJOR@
+#define VERSION_MINOR @rpmud_VERSION_MINOR@
