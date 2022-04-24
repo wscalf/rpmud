@@ -10,6 +10,10 @@ class ClientAdapter
             commandHandler = handler;
         }
         virtual void sendOutput(std::string text) = 0;
+        virtual ~ClientAdapter()
+        {
+            
+        }
     protected:
         std::function<void(std::string)> commandHandler;
 };

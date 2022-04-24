@@ -46,7 +46,7 @@ void TelnetAdapter::on_buffer_recv(bufferevent *bev, void *data)
     telnet_recv(obj->peer, dest_buf.get(), length);
 }
 
-void TelnetAdapter::telnet_callback(telnet_t *peer, telnet_event_t *event, void* data)
+void TelnetAdapter::telnet_callback([[maybe_unused]] telnet_t *peer, telnet_event_t *event, void* data)
 {
     TelnetAdapter* obj = (TelnetAdapter*)data;
     string input;
@@ -58,6 +58,20 @@ void TelnetAdapter::telnet_callback(telnet_t *peer, telnet_event_t *event, void*
             break;
         case TELNET_EV_SEND:
             bufferevent_write(obj->bev, event->data.buffer, event->data.size);
+            break;
+        case TELNET_EV_IAC:
+        case TELNET_EV_WILL:
+        case TELNET_EV_WONT:
+        case TELNET_EV_DO:
+        case TELNET_EV_DONT:
+        case TELNET_EV_SUBNEGOTIATION:
+        case TELNET_EV_COMPRESS:
+        case TELNET_EV_ZMP:
+        case TELNET_EV_TTYPE:
+        case TELNET_EV_ENVIRON:
+        case TELNET_EV_MSSP:
+        case TELNET_EV_WARNING:
+        case TELNET_EV_ERROR:
             break;
     }
 }

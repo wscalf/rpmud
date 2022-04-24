@@ -37,7 +37,7 @@ TelnetProtocol::~TelnetProtocol()
     event_base_free(evbase);
 }
 
-void TelnetProtocol::on_connect(evconnlistener* listener, evutil_socket_t descriptor, sockaddr* addr, int socklen, void* data)
+void TelnetProtocol::on_connect([[maybe_unused]] evconnlistener* listener, evutil_socket_t descriptor, [[maybe_unused]] sockaddr* addr, [[maybe_unused]] int socklen, void* data)
 {
     TelnetProtocol *tp = (TelnetProtocol*)data;
     bufferevent *bev = bufferevent_socket_new(tp->evbase, descriptor, BEV_OPT_CLOSE_ON_FREE);

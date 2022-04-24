@@ -3,6 +3,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 set(CMAKE_BUILD_TYPE Debug)
 
+add_compile_options(-Wall -Wextra -pedantic -Werror)
+
 project(rpmud VERSION 0.1)
 configure_file(version.h.in version.h)
 

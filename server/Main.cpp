@@ -15,7 +15,7 @@ Room* createWorld()
     return start;
 }
 
-int main(int argc, char** argv) {
+int main() {
     Room *startingZone = createWorld();
     LoginProcess* login = new LoginProcess(startingZone);
     std::function<void(ClientAdapter*)> handler = std::bind(&LoginProcess::begin, login, std::placeholders::_1);

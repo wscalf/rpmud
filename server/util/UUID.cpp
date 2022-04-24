@@ -37,3 +37,8 @@ UUID UUID::operator=(const UUID& other)
     
     return *this;
 }
+
+UUID::UUID(const UUID& other)
+{
+    *this = other;
+}
