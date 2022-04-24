@@ -3,26 +3,29 @@
 
 #include "network/TelnetProtocol.h"
 #include "network/ClientAdapter.h"
+#include "world/Room.h"
+#include "world/LoginProcess.h"
+#include "util/UUID.h"
 
 using namespace std;
 
-static const char* greeting = "Welcome, client!\n";
-
-void on_command(string command)
+Room* createWorld()
 {
-    cout << "Received: " << command << endl;
-}
-
-void on_new_client(ClientAdapter *client)
-{
-    client->SetCommandHandler(on_command);
-    client->SendOutput(greeting);
+    Room *start = new Room(UUID::create());
+    return start;
 }
 
 int main(int argc, char** argv) {
+    Room *startingZone = createWorld();
+    LoginProcess* login = new LoginProcess(startingZone);
+    std::function<void(ClientAdapter*)> handler = std::bind(&LoginProcess::begin, login, std::placeholders::_1);
+
     TelnetProtocol *proto = new TelnetProtocol(4000);
-    proto->SetConnectionHandler(on_new_client);
+    proto->setConnectionHandler(handler);
     proto->Start();
 
     cout << "Protocol yielded, shutting down";
+
+    delete proto;
 }
+

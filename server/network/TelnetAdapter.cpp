@@ -27,9 +27,10 @@ TelnetAdapter::TelnetAdapter(bufferevent *bev)
     bufferevent_enable(bev, EV_READ);
 }
 
-void TelnetAdapter::SendOutput(string text)
+void TelnetAdapter::sendOutput(string text)
 {
     bufferevent_write(bev, text.data(), text.size());
+    bufferevent_write(bev, "\n", 1); //Is this slow?
 }
 
 void TelnetAdapter::on_buffer_recv(bufferevent *bev, void *data)
@@ -52,7 +53,7 @@ void TelnetAdapter::telnet_callback(telnet_t *peer, telnet_event_t *event, void*
     switch (event->type)
     {
         case TELNET_EV_DATA:
-            input = string(event->data.buffer, event->data.size);
+            input = string(event->data.buffer, event->data.size - 2); //Exclude trailing line break
             obj->commandHandler(input);
             break;
         case TELNET_EV_SEND:

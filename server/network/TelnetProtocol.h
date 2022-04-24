@@ -1,5 +1,5 @@
-#include "ClientAdapter.h"
-#include "ClientProtocol.h"
+#include "network/ClientAdapter.h"
+#include "network/ClientProtocol.h"
 
 #include <event2/event.h>
 #include <event2/listener.h>

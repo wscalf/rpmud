@@ -1,10 +1,10 @@
 #include <functional>
-#include "ClientAdapter.h"
+#include "network/ClientAdapter.h"
 
 class ClientProtocol
 {
     public:
-        virtual void SetConnectionHandler(std::function<void(ClientAdapter*)> cb)
+        virtual void setConnectionHandler(std::function<void(ClientAdapter*)> cb)
         {
             connectionCallback = cb;
         }

@@ -1,6 +1,9 @@
 #Binaries
 rpmud
 
+#IDE
+.vscode/
+
 #CMake
 CMakeCache.txt
 cmake_install.cmake

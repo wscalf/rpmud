@@ -3,12 +3,12 @@
 #include <libtelnet.h>
 #include <event2/bufferevent.h>
 
-#include "ClientAdapter.h"
+#include "network/ClientAdapter.h"
 
 class TelnetAdapter : public ClientAdapter
 {
     public:
-        void SendOutput(std::string text);
+        void sendOutput(std::string text);
         TelnetAdapter(bufferevent *bev);
     private:
         telnet_t *peer;

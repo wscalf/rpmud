@@ -1,6 +1,6 @@
 #include "TelnetProtocol.h"
 #include <event2/bufferevent.h>
-#include "TelnetAdapter.h"
+#include "network/TelnetAdapter.h"
 
 //Calling start/stop/start/stop probably won't work like this
 void TelnetProtocol::Start()
