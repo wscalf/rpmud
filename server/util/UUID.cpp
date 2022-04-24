@@ -14,7 +14,7 @@ UUID::UUID()
 
 }
 
-bool UUID::operator==(const UUID& other)
+bool UUID::operator==(const UUID& other) const
 {
     for (auto i = 0; i < 16; i++)
     {
@@ -25,17 +25,15 @@ bool UUID::operator==(const UUID& other)
     return true;
 }
 
-bool UUID::operator!=(const UUID& other)
+bool UUID::operator!=(const UUID& other) const
 {
     return !(*this == other);
 }
 
-UUID UUID::operator=(const UUID& other)
+void UUID::operator=(const UUID& other)
 {
     for (auto i = 0; i < 16; i++)
         this->data[i] = other.data[i];
-    
-    return *this;
 }
 
 UUID::UUID(const UUID& other)

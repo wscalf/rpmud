@@ -1,4 +1,4 @@
-target_sources(rpmud
+target_sources(objects
     PUBLIC
         TelnetProtocol.cpp
         TelnetAdapter.cpp
