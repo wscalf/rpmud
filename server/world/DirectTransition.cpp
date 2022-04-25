@@ -1,7 +1,9 @@
 #include "world/DirectTransition.h"
 
-void DirectTransition::activate(Player& player)
+#include "world/Room.h"
+
+void DirectTransition::activate(Player* player)
 {
-    from.remove(player);
-    to.add(player);
+    from->remove(player);
+    to->add(player);
 }
