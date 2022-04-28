@@ -1,3 +1,5 @@
+add_subdirectory(tests)
+
 target_sources(objects
     PUBLIC
         #DirectTransition.cpp

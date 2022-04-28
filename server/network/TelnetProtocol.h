@@ -21,4 +21,5 @@ class TelnetProtocol : public ClientProtocol
         event_base *evbase;
         evconnlistener *listener;
         static void on_connect(evconnlistener* listener, evutil_socket_t descriptor, sockaddr* addr, int socklen, void* data);
+        static void on_signal(evutil_socket_t signal, short events, void* data);
 };

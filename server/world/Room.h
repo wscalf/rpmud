@@ -13,6 +13,8 @@ class Room : public MUDObject
         void add(Player* player);
         void remove(Player* player);
         void addLink(Transition* transition);
+        //Only intended for unit tests
+        bool containsPlayer(UUID id);
         Room(UUID id);
     private:
          std::list<Player*> players;

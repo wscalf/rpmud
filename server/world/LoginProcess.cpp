@@ -69,7 +69,7 @@ bool LoginWorker::isSuccessful()
 
 Player* LoginWorker::createPlayer()
 {
-    auto player = new Player(UUID::create(), this->adapter, nullptr); //Need access to commandsystem
+    auto player = new Player(UUID::create(), name, this->adapter, nullptr); //Need access to commandsystem
     player->setName(name);
     return player;
 }

@@ -9,8 +9,9 @@ class CommandSystem;
 class Player : public MUDObject
 {
     public:
-        explicit Player(UUID id, ClientAdapter* adapter, CommandSystem* commands);
+        explicit Player(UUID id, std::string name, ClientAdapter* adapter, CommandSystem* commands);
         void send(std::string text);
+        UUID getSessionId();
         Room* getRoom();
         void setRoom(Room* room);
         ~Player();
@@ -18,4 +19,5 @@ class Player : public MUDObject
         CommandSystem* commandSystem;
         ClientAdapter* adapter;
         Room* room;
+        void onDisconnect();
 };

@@ -16,6 +16,7 @@ include_directories(.)
 include_directories(external/googletest/googletest/include)
 link_directories(external/googletest/build/lib)
 
+add_subdirectory(doubles)
 add_subdirectory(util)
 add_subdirectory(network)
 add_subdirectory(world)
@@ -23,6 +24,8 @@ add_subdirectory(scripting)
 
 add_executable(rpmud Main.cpp $<TARGET_OBJECTS:objects>)
 add_executable(rpmud_tests TestMain.cpp $<TARGET_OBJECTS:objects> $<TARGET_OBJECTS:tests>)
+
+target_compile_definitions(rpmud_tests PRIVATE TEST_BUILD)
 
 target_link_libraries(rpmud
     PUBLIC

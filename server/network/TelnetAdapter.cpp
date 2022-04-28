@@ -1,7 +1,10 @@
 #include "TelnetAdapter.h"
+
 #include <event2/event.h>
 #include <event2/buffer.h>
 #include <memory>
+
+#include "util/Log.h"
 
 using namespace std;
 
@@ -23,7 +26,7 @@ TelnetAdapter::TelnetAdapter(bufferevent *bev)
 {
     this->bev = bev;
     peer = telnet_init(telnet_opts, telnet_callback, 0, this);
-    bufferevent_setcb(bev, on_buffer_recv, NULL, NULL, this);
+    bufferevent_setcb(bev, on_buffer_recv, NULL, on_buffer_event, this);
     bufferevent_enable(bev, EV_READ);
 }
 
@@ -45,6 +48,28 @@ void TelnetAdapter::on_buffer_recv(bufferevent *bev, void *data)
 
     telnet_recv(obj->peer, dest_buf.get(), length);
 }
+
+void TelnetAdapter::on_buffer_event([[maybe_unused]] bufferevent *bev, short event, void *data)
+{
+    TelnetAdapter *obj = (TelnetAdapter*)data;
+    bool unrecoverable = false;
+    if (BEV_EVENT_ERROR & event) //Some other issue?
+    {
+        Log::errorNo("Error communicating with client.", obj->getSessionId());
+        unrecoverable = true;
+    }
+    
+    if (BEV_EVENT_EOF & event)
+    {
+        unrecoverable = true;
+    }
+
+    if (unrecoverable)
+    {
+        obj->disconnectHandler(obj);
+    }
+}
+
 
 void TelnetAdapter::telnet_callback([[maybe_unused]] telnet_t *peer, telnet_event_t *event, void* data)
 {
@@ -74,4 +99,10 @@ void TelnetAdapter::telnet_callback([[maybe_unused]] telnet_t *peer, telnet_even
         case TELNET_EV_ERROR:
             break;
     }
+}
+
+TelnetAdapter::~TelnetAdapter()
+{
+    telnet_free(this->peer);
+    bufferevent_free(this->bev);
 }

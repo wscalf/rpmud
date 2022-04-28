@@ -17,7 +17,7 @@ void Room::add(Player* player)
 
 void Room::remove(Player* player)
 {
-    //Search list and remove match
+    players.remove(player);
     sendToAll(player->getName() + " left");
 }
 
@@ -32,4 +32,12 @@ void Room::sendToAll(std::string message)
     {
         (*i)->send(message);
     }
+}
+
+bool Room::containsPlayer(UUID id)
+{
+    for (auto i = players.begin(); i != players.end(); ++i)
+        if ((*i)->getId() == id)
+            return true;
+    return false;
 }

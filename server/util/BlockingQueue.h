@@ -25,7 +25,7 @@ class BlockingQueue
         T pop()
         {
             unique_lock<mutex> lock(_mutex);
-            this->_condition.wait(lock, [=]{return !_queue.empty();});
+            this->_condition.wait(lock, [this]{return !_queue.empty();});
             T item = _queue.front();
             _queue.pop();
             return item;

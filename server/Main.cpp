@@ -7,6 +7,8 @@
 #include "world/LoginProcess.h"
 #include "util/UUID.h"
 
+#include "util/Log.h"
+
 using namespace std;
 
 Room* createWorld()
@@ -16,6 +18,8 @@ Room* createWorld()
 }
 
 int main() {
+    Log::init(LogLevel::INFO);
+    Log::info("Starting up...");
     Room *startingZone = createWorld();
     LoginProcess* login = new LoginProcess(startingZone);
     std::function<void(ClientAdapter*)> handler = std::bind(&LoginProcess::begin, login, std::placeholders::_1);
@@ -24,7 +28,7 @@ int main() {
     proto->setConnectionHandler(handler);
     proto->Start();
 
-    cout << "Protocol yielded, shutting down";
+    Log::info("Shutting down"); //Might need some way to hold it open until all logs are written. Does this get shown?
 
     delete proto;
 }
