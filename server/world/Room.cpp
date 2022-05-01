@@ -12,11 +12,12 @@ void Room::add(Player* player)
 {
     sendToAll(player->getName() + " joined");
     players.push_back(player);
-    player->setRoom(this);
+    player->setRoom(*this);
 }
 
 void Room::remove(Player* player)
 {
+    player->clearRoom();
     players.remove(player);
     sendToAll(player->getName() + " left");
 }

@@ -1,4 +1,5 @@
 #include "doubles/FakeClientAdapter.h"
+#include "util/Log.h"
 
 void FakeClientAdapter::sendOutput(std::string text)
 {
@@ -29,4 +30,9 @@ bool FakeClientAdapter::hasReceivedOutput(std::function<bool(std::string)> predi
 bool FakeClientAdapter::hasReceivedOutputContaining(std::string sample)
 {
     return hasReceivedOutput([sample] (std::string s) {return s.find(sample) != std::string::npos;});
+}
+
+FakeClientAdapter::~FakeClientAdapter()
+{
+    Log::debug("Destroyed fake adapter: " + getSessionId().toStr());
 }

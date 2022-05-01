@@ -13,6 +13,7 @@ class FakeClientAdapter : public ClientAdapter
         void disconnect();
         bool hasReceivedOutput(std::function<bool(std::string)> predicate);
         bool hasReceivedOutputContaining(std::string sample);
+        ~FakeClientAdapter() override;
     private:
         std::list<std::string> outputs;
 };

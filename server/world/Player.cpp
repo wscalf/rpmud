@@ -6,11 +6,11 @@
 #include "scripting/CommandSystem.h"
 #include "util/Log.h"
 
-Player::Player(UUID id, std::string name, ClientAdapter* adapter, CommandSystem* commands)
-    : MUDObject(id), commandSystem {commands}, adapter {adapter}
+Player::Player(UUID id, std::string name, unique_ptr<ClientAdapter> adapter, CommandSystem& commands)
+    : MUDObject(id), _commandSystem {commands}, _adapter {std::move(adapter)}
 {   
-    adapter->setCommandHandler(std::bind(&CommandSystem::execute, commandSystem, this, std::placeholders::_1));
-    adapter->setDisconnectHandler([this]([[maybe_unused]]ClientAdapter* c) {this->onDisconnect();});
+    _adapter->setCommandHandler(std::bind(&CommandSystem::execute, _commandSystem, this, std::placeholders::_1));
+    _adapter->setDisconnectHandler([this]([[maybe_unused]]ClientAdapter* c) {this->onDisconnect();});
 
     setName(name);
 
@@ -19,33 +19,38 @@ Player::Player(UUID id, std::string name, ClientAdapter* adapter, CommandSystem*
 
 void Player::send(std::string text)
 {
-    adapter->sendOutput(text);
+    _adapter->sendOutput(text);
 }
 
-Room* Player::getRoom()
+Room& Player::getRoom()
 {
-    return this->room;
+    return _room.value();
 }
 
-void Player::setRoom(Room* room)
+void Player::setRoom(Room& room)
 {
-    this->room = room;
+    _room = room;
+}
+
+void Player::clearRoom()
+{
+    _room.reset();
 }
 
 UUID Player::getSessionId()
 {
-    return adapter->getSessionId();
+    return _adapter->getSessionId();
 }
 
 void Player::onDisconnect()
 {
-    if (room)
-        room->remove(this);
+    if (_room.has_value())
+        _room.value().get().remove(this);
 
     Log::info("Player " + getName() + " disconnected", getSessionId());
 }
 
 Player::~Player()
 {
-    delete adapter; //Shouldn't be necessary with smart pointers
+
 }

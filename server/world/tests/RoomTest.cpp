@@ -23,10 +23,10 @@ class RoomTest : public ::testing::Test
         comsys = new CommandSystem();
         
         playerAConnection = new FakeClientAdapter();
-        playerA = new Player(UUID::create(), "A", playerAConnection, comsys);
+        playerA = new Player(UUID::create(), "A", std::unique_ptr<ClientAdapter>(playerAConnection), *comsys);
 
         playerBConnection = new FakeClientAdapter();
-        playerB = new Player(UUID::create(), "B", playerBConnection, comsys);
+        playerB = new Player(UUID::create(), "B", std::unique_ptr<ClientAdapter>(playerBConnection), *comsys);
 
         room = new Room(UUID::create());
     }

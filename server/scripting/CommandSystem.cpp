@@ -8,5 +8,5 @@ void CommandSystem::execute(Player* player, std::string command)
 {
     std::string message = player->getName() + " says, \"" + command + "\"";
     
-    player->getRoom()->sendToAll(message);
+    player->getRoom().sendToAll(message);
 }

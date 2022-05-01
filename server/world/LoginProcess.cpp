@@ -6,12 +6,14 @@
 #include "world/Room.h"
 #include "world/LoginProcess.h"
 #include "world/Player.h"
+#include "scripting/CommandSystem.h"
 
 static const char* greeting = "Welcome, client!\n";
 
 void LoginProcess::begin(ClientAdapter* adapter)
 {
-    auto worker = new LoginWorker(adapter);
+
+    auto worker = new LoginWorker(std::unique_ptr<ClientAdapter>(adapter));
     worker->setCompleteHandler(std::bind(&LoginProcess::processLogin, this, std::placeholders::_1));
 }
 
@@ -28,22 +30,17 @@ void LoginProcess::processLogin(LoginWorker* worker)
         auto player = worker->createPlayer();
         startRoom->add(player);
     }
-    else
-    {
-        delete worker->getClientAdapter();
-    }
 
     delete worker; //Consider object pool
 }
 
 
-
-
-LoginWorker::LoginWorker(ClientAdapter* adapter)
-    : adapter {adapter}
+LoginWorker::LoginWorker(std::unique_ptr<ClientAdapter> adapter)
+    : adapter {std::move(adapter)}
 {
-    adapter->setCommandHandler(std::bind(&LoginWorker::processCommand, this, std::placeholders::_1));
-    adapter->sendOutput(greeting);
+    this->adapter->setCommandHandler(std::bind(&LoginWorker::processCommand, this, std::placeholders::_1));
+    this->adapter->setDisconnectHandler(std::bind(&LoginWorker::processDisconnect, this));
+    this->adapter->sendOutput(greeting);
 }
 
 void LoginWorker::setCompleteHandler(std::function<void(LoginWorker*)> handler)
@@ -51,26 +48,31 @@ void LoginWorker::setCompleteHandler(std::function<void(LoginWorker*)> handler)
     this->completeHandler = handler;
 }
 
-ClientAdapter* LoginWorker::getClientAdapter()
-{
-    return this->adapter;
-}
-
 void LoginWorker::processCommand(std::string command)
 {
+    if (command == "quit")
+    {
+        completeHandler(this);
+        return;
+    }
+
     name = command;
     completeHandler(this);
 }
 
 bool LoginWorker::isSuccessful()
 {
-    return true;
+    return !name.empty();
 }
 
 Player* LoginWorker::createPlayer()
 {
-    auto player = new Player(UUID::create(), name, this->adapter, nullptr); //Need access to commandsystem
+    auto player = new Player(UUID::create(), name, std::move(this->adapter), *(new CommandSystem())); //Need access to commandsystem
     player->setName(name);
     return player;
 }
 
+void LoginWorker::processDisconnect()
+{
+    completeHandler(this);
+}

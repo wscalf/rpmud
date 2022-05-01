@@ -2,6 +2,7 @@
 
 #include <string>
 #include <functional>
+#include <memory>
 
 class Room;
 class ClientAdapter;
@@ -9,16 +10,15 @@ class ClientAdapter;
 class LoginWorker
 {
     public:
-        LoginWorker(ClientAdapter* adapter);
+        LoginWorker(std::unique_ptr<ClientAdapter> adapter);
         void setCompleteHandler(std::function<void(LoginWorker*)> handler);
-
-        ClientAdapter* getClientAdapter();
         bool isSuccessful();
         Player* createPlayer();
     private:
         std::string name;
-        ClientAdapter* adapter;
+        std::unique_ptr<ClientAdapter> adapter;
         void processCommand(std::string command);
+        void processDisconnect();
         std::function<void(LoginWorker*)> completeHandler;
 };
 
