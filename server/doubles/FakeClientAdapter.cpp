@@ -39,5 +39,5 @@ bool FakeClientAdapter::hasReceivedOutputContaining(std::string sample)
 
 FakeClientAdapter::~FakeClientAdapter()
 {
-    Log::debug("Destroyed fake adapter: " + getSessionId().toStr());
+
 }
