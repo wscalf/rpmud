@@ -10,13 +10,17 @@ class ClientAdapter
         void setDisconnectHandler(std::function<void(ClientAdapter*)> handler);
         UUID getSessionId();
 
-        virtual void sendOutput(std::string text) = 0;
+        void sendOutput(std::string text);
+        virtual void sendOutputInternal(std::string text) = 0;
 
         ClientAdapter();
         virtual ~ClientAdapter();
     protected:
+        void reportDisconnected();
+        void reportConnected();
         std::function<void(std::string)> commandHandler;
-        std::function<void(ClientAdapter*)> disconnectHandler;
     private:
+        bool alive = false;
+        std::function<void(ClientAdapter*)> disconnectHandler;
         UUID sessionId;
 };

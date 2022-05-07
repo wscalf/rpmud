@@ -26,8 +26,8 @@ class LoginProcess
 {
     public:
         void begin(ClientAdapter* adapter);
-        LoginProcess(Room* startRoom);
+        LoginProcess(Room& startRoom);
     private:
         void processLogin(LoginWorker* worker);
-        Room* startRoom;
+        Room& startRoom;
 };

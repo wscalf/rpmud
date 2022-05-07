@@ -20,3 +20,8 @@ MUDObject::MUDObject(UUID id)
 {
 
 }
+
+bool MUDObject::operator==(const MUDObject& other)
+{
+    return id == other.id;
+}

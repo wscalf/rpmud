@@ -4,9 +4,9 @@
 #include "world/Room.h"
 
 
-void CommandSystem::execute(Player* player, std::string command)
+void CommandSystem::execute(std::shared_ptr<Player> player, std::string command)
 {
     std::string message = player->getName() + " says, \"" + command + "\"";
     
-    player->getRoom().sendToAll(message);
+    player->getRoom()->sendToAll(message);
 }

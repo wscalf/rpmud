@@ -17,7 +17,7 @@ void LoginProcess::begin(ClientAdapter* adapter)
     worker->setCompleteHandler(std::bind(&LoginProcess::processLogin, this, std::placeholders::_1));
 }
 
-LoginProcess::LoginProcess(Room* startRoom)
+LoginProcess::LoginProcess(Room& startRoom)
     : startRoom {startRoom}
 {
 
@@ -27,8 +27,8 @@ void LoginProcess::processLogin(LoginWorker* worker)
 {
     if (worker->isSuccessful())
     {
-        auto player = worker->createPlayer();
-        startRoom->add(player);
+        auto player = std::shared_ptr<Player>(worker->createPlayer()); //TODO: track this object in some sort of manager
+        startRoom.add(player);
     }
 
     delete worker; //Consider object pool

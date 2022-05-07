@@ -16,7 +16,7 @@ class TelnetProtocol : public ClientProtocol
         void Stop();
 
         TelnetProtocol(int port)
-            : port {port}, evbase {NULL, event_base_free}, listener {NULL, evconnlistener_free}
+            : port {port}, evbase {nullptr, event_base_free}, listener {nullptr, evconnlistener_free}
         {
 
         }

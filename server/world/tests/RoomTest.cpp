@@ -14,8 +14,8 @@ class RoomTest : public ::testing::Test
         CommandSystem* comsys;
         FakeClientAdapter* playerAConnection;
         FakeClientAdapter* playerBConnection;
-        Player* playerA;
-        Player* playerB;
+        std::shared_ptr<Player> playerA;
+        std::shared_ptr<Player> playerB;
         Room* room;
 
     void SetUp() override
@@ -23,10 +23,10 @@ class RoomTest : public ::testing::Test
         comsys = new CommandSystem();
         
         playerAConnection = new FakeClientAdapter();
-        playerA = new Player(UUID::create(), "A", std::unique_ptr<ClientAdapter>(playerAConnection), *comsys);
+        playerA = std::make_shared<Player>(UUID::create(), "A", std::unique_ptr<ClientAdapter>(playerAConnection), *comsys);
 
         playerBConnection = new FakeClientAdapter();
-        playerB = new Player(UUID::create(), "B", std::unique_ptr<ClientAdapter>(playerBConnection), *comsys);
+        playerB = std::make_shared<Player>(UUID::create(), "B", std::unique_ptr<ClientAdapter>(playerBConnection), *comsys);
 
         room = new Room(UUID::create());
     }
@@ -34,8 +34,6 @@ class RoomTest : public ::testing::Test
     void TearDown() override
     {
         delete room;
-        delete playerA;
-        delete playerB;
         delete comsys;
     }
 

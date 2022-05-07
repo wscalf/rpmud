@@ -1,7 +1,12 @@
 #include "doubles/FakeClientAdapter.h"
 #include "util/Log.h"
 
-void FakeClientAdapter::sendOutput(std::string text)
+FakeClientAdapter::FakeClientAdapter()
+{
+    reportConnected();
+}
+
+void FakeClientAdapter::sendOutputInternal(std::string text)
 {
     outputs.push_back(text);
 }
@@ -13,7 +18,7 @@ void FakeClientAdapter::sendInput(std::string text)
 
 void FakeClientAdapter::disconnect()
 {
-    disconnectHandler(this);
+    reportDisconnected();
 }
 
 bool FakeClientAdapter::hasReceivedOutput(std::function<bool(std::string)> predicate)

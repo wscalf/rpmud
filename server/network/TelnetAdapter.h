@@ -9,7 +9,7 @@
 class TelnetAdapter : public ClientAdapter
 {
     public:
-        void sendOutput(std::string text) override;
+        void sendOutputInternal(std::string text) override;
         explicit TelnetAdapter(bufferevent *bev);
     private:
         std::unique_ptr<bufferevent, void(*)(bufferevent*)> bev;
