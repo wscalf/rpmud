@@ -31,7 +31,7 @@ void Room::sendToAll(std::string message)
 {
     for (auto i = players.begin(); i != players.end(); ++i)
     {
-        auto player = (*i).get();
+        auto player = *i;
         player->send(message);
     }
 }
@@ -40,7 +40,7 @@ bool Room::containsPlayer(UUID id)
 {
     for (auto i = players.begin(); i != players.end(); ++i)
     {
-        auto player = (*i).get();
+        auto player = *i;
         if (player->getId() == id)
             return true;
     }

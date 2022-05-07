@@ -29,9 +29,8 @@ int main() {
     TelnetProtocol *proto = new TelnetProtocol(4000);
     proto->setConnectionHandler(handler);
     proto->Start();
-    delete proto;
 
     Log::info("Shutting down"); //Might need some way to hold it open until all logs are written. Does this get shown?
-
+    delete proto;
 }
 

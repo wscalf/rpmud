@@ -36,11 +36,11 @@ void LoginProcess::processLogin(LoginWorker* worker)
 
 
 LoginWorker::LoginWorker(std::unique_ptr<ClientAdapter> adapter, CommandSystem& commandSystem)
-    : adapter {std::move(adapter)}, _commandSystem {commandSystem}
+    : _adapter {std::move(adapter)}, _commandSystem {commandSystem}
 {
-    this->adapter->setCommandHandler(std::bind(&LoginWorker::processCommand, this, std::placeholders::_1));
-    this->adapter->setDisconnectHandler(std::bind(&LoginWorker::processDisconnect, this));
-    this->adapter->sendOutput(greeting);
+    _adapter->setCommandHandler(std::bind(&LoginWorker::processCommand, this, std::placeholders::_1));
+    _adapter->setDisconnectHandler(std::bind(&LoginWorker::processDisconnect, this));
+    _adapter->sendOutput(greeting);
 }
 
 void LoginWorker::setCompleteHandler(std::function<void(LoginWorker*)> handler)
@@ -67,7 +67,7 @@ bool LoginWorker::isSuccessful()
 
 Player* LoginWorker::createPlayer()
 {
-    auto player = new Player(UUID::create(), name, std::move(this->adapter), _commandSystem); //Need access to commandsystem
+    auto player = new Player(UUID::create(), name, std::move(this->_adapter), _commandSystem); //Need access to commandsystem
     player->setName(name);
     return player;
 }

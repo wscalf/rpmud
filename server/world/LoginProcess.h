@@ -17,7 +17,7 @@ class LoginWorker
         Player* createPlayer();
     private:
         std::string name;
-        std::unique_ptr<ClientAdapter> adapter;
+        std::unique_ptr<ClientAdapter> _adapter;
         CommandSystem& _commandSystem;
         void processCommand(std::string command);
         void processDisconnect();
