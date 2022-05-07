@@ -1,7 +1,10 @@
 #pragma once
 #include <list>
 
+#include <memory>
+#include <functional>
 #include "world/MUDObject.h"
+#include "world/Transition.h"
 
 class Player;
 class Transition;
@@ -10,13 +13,13 @@ class Room : public MUDObject
 {
     public:
         void sendToAll(std::string message);
-        void add(Player* player);
-        void remove(Player* player);
-        void addLink(Transition* transition);
+        void add(std::shared_ptr<Player> player);
+        void remove(std::shared_ptr<Player> player);
+        void addLink(std::unique_ptr<Transition> transition);
         //Only intended for unit tests
         bool containsPlayer(UUID id);
         Room(UUID id);
     private:
-         std::list<Player*> players;
-         std::list<Transition*> transitions;
+         std::list<std::shared_ptr<Player>> players;
+         std::list<std::unique_ptr<Transition>> transitions;
 };

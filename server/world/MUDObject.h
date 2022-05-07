@@ -11,6 +11,8 @@ class MUDObject
         void setName(std::string name);
 
         MUDObject(UUID id);
+
+        bool operator==(const MUDObject& other);
     private:
         UUID id;
         std::string name;

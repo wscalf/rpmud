@@ -19,21 +19,20 @@ static const telnet_telopt_t telnet_opts[] = {
     { -1, 0, 0 }
 };
 
-//TODO: add means to detect client disconnects and to forcefully disconnect clients
-//Also need a means of cleaning up objects after disconnection, related to above
-
 TelnetAdapter::TelnetAdapter(bufferevent *bev)
+    : bev {bev, bufferevent_free}, peer {NULL, telnet_free}
 {
-    this->bev = bev;
-    peer = telnet_init(telnet_opts, telnet_callback, 0, this);
+    peer.reset(telnet_init(telnet_opts, telnet_callback, 0, this));
     bufferevent_setcb(bev, on_buffer_recv, NULL, on_buffer_event, this);
     bufferevent_enable(bev, EV_READ);
+
+    reportConnected();
 }
 
-void TelnetAdapter::sendOutput(string text)
+void TelnetAdapter::sendOutputInternal(string text)
 {
-    bufferevent_write(bev, text.data(), text.size());
-    bufferevent_write(bev, "\n", 1); //Is this slow?
+    bufferevent_write(bev.get(), text.data(), text.size());
+    bufferevent_write(bev.get(), "\n", 1); //Is this slow?
 }
 
 void TelnetAdapter::on_buffer_recv(bufferevent *bev, void *data)
@@ -46,10 +45,10 @@ void TelnetAdapter::on_buffer_recv(bufferevent *bev, void *data)
     unique_ptr<char[]> dest_buf = make_unique<char[]>(length);
     evbuffer_remove(input_buf, dest_buf.get(), length);
 
-    telnet_recv(obj->peer, dest_buf.get(), length);
+    telnet_recv(obj->peer.get(), dest_buf.get(), length);
 }
 
-void TelnetAdapter::on_buffer_event([[maybe_unused]] bufferevent *bev, short event, void *data)
+void TelnetAdapter::on_buffer_event(bufferevent*, short event, void *data)
 {
     TelnetAdapter *obj = (TelnetAdapter*)data;
     bool unrecoverable = false;
@@ -66,12 +65,12 @@ void TelnetAdapter::on_buffer_event([[maybe_unused]] bufferevent *bev, short eve
 
     if (unrecoverable)
     {
-        obj->disconnectHandler(obj);
+        obj->reportDisconnected();
     }
 }
 
 
-void TelnetAdapter::telnet_callback([[maybe_unused]] telnet_t *peer, telnet_event_t *event, void* data)
+void TelnetAdapter::telnet_callback(telnet_t*, telnet_event_t *event, void* data)
 {
     TelnetAdapter* obj = (TelnetAdapter*)data;
     string input;
@@ -82,7 +81,7 @@ void TelnetAdapter::telnet_callback([[maybe_unused]] telnet_t *peer, telnet_even
             obj->commandHandler(input);
             break;
         case TELNET_EV_SEND:
-            bufferevent_write(obj->bev, event->data.buffer, event->data.size);
+            bufferevent_write(obj->bev.get(), event->data.buffer, event->data.size);
             break;
         case TELNET_EV_IAC:
         case TELNET_EV_WILL:
@@ -99,10 +98,4 @@ void TelnetAdapter::telnet_callback([[maybe_unused]] telnet_t *peer, telnet_even
         case TELNET_EV_ERROR:
             break;
     }
-}
-
-TelnetAdapter::~TelnetAdapter()
-{
-    telnet_free(this->peer);
-    bufferevent_free(this->bev);
 }

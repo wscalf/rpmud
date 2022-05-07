@@ -8,11 +8,13 @@
 class FakeClientAdapter : public ClientAdapter
 {
     public:
-        void sendOutput(std::string text) override;
+        void sendOutputInternal(std::string text) override;
         void sendInput(std::string text);
         void disconnect();
         bool hasReceivedOutput(std::function<bool(std::string)> predicate);
         bool hasReceivedOutputContaining(std::string sample);
+        FakeClientAdapter();
+        ~FakeClientAdapter() override;
     private:
         std::list<std::string> outputs;
 };

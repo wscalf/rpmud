@@ -1,8 +1,13 @@
+#pragma once
+
 #include "network/ClientAdapter.h"
 #include "network/ClientProtocol.h"
 
 #include <event2/event.h>
 #include <event2/listener.h>
+#include <memory>
+
+#include <iostream>
 
 class TelnetProtocol : public ClientProtocol
 {
@@ -11,15 +16,16 @@ class TelnetProtocol : public ClientProtocol
         void Stop();
 
         TelnetProtocol(int port)
+            : port {port}, evbase {nullptr, event_base_free}, listener {nullptr, evconnlistener_free}
         {
-            this->port = port;
+
         }
         ~TelnetProtocol();
 
     private:
         int port;
-        event_base *evbase;
-        evconnlistener *listener;
+        std::unique_ptr<event_base, decltype(&event_base_free)> evbase;
+        std::unique_ptr<evconnlistener, decltype(&evconnlistener_free)> listener;
         static void on_connect(evconnlistener* listener, evutil_socket_t descriptor, sockaddr* addr, int socklen, void* data);
         static void on_signal(evutil_socket_t signal, short events, void* data);
 };
