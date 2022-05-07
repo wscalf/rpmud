@@ -13,12 +13,12 @@ static const char* greeting = "Welcome, client!\n";
 void LoginProcess::begin(ClientAdapter* adapter)
 {
 
-    auto worker = new LoginWorker(std::unique_ptr<ClientAdapter>(adapter));
+    auto worker = new LoginWorker(std::unique_ptr<ClientAdapter>(adapter), _commandSystem);
     worker->setCompleteHandler(std::bind(&LoginProcess::processLogin, this, std::placeholders::_1));
 }
 
-LoginProcess::LoginProcess(Room& startRoom)
-    : startRoom {startRoom}
+LoginProcess::LoginProcess(Room& startRoom, CommandSystem& commandSystem)
+    : _startRoom {startRoom}, _commandSystem {commandSystem}
 {
 
 }
@@ -28,15 +28,15 @@ void LoginProcess::processLogin(LoginWorker* worker)
     if (worker->isSuccessful())
     {
         auto player = std::shared_ptr<Player>(worker->createPlayer()); //TODO: track this object in some sort of manager
-        startRoom.add(player);
+        _startRoom.add(player);
     }
 
     delete worker; //Consider object pool
 }
 
 
-LoginWorker::LoginWorker(std::unique_ptr<ClientAdapter> adapter)
-    : adapter {std::move(adapter)}
+LoginWorker::LoginWorker(std::unique_ptr<ClientAdapter> adapter, CommandSystem& commandSystem)
+    : adapter {std::move(adapter)}, _commandSystem {commandSystem}
 {
     this->adapter->setCommandHandler(std::bind(&LoginWorker::processCommand, this, std::placeholders::_1));
     this->adapter->setDisconnectHandler(std::bind(&LoginWorker::processDisconnect, this));
@@ -67,7 +67,7 @@ bool LoginWorker::isSuccessful()
 
 Player* LoginWorker::createPlayer()
 {
-    auto player = new Player(UUID::create(), name, std::move(this->adapter), *(new CommandSystem())); //Need access to commandsystem
+    auto player = new Player(UUID::create(), name, std::move(this->adapter), _commandSystem); //Need access to commandsystem
     player->setName(name);
     return player;
 }

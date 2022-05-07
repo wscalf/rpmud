@@ -5,6 +5,7 @@
 #include "network/ClientAdapter.h"
 #include "world/Room.h"
 #include "world/LoginProcess.h"
+#include "scripting/CommandSystem.h"
 #include "util/UUID.h"
 
 #include "util/Log.h"
@@ -21,7 +22,8 @@ int main() {
     Log::init(LogLevel::INFO);
     Log::info("Starting up...");
     Room *startingZone = createWorld();
-    LoginProcess* login = new LoginProcess(*startingZone);
+    CommandSystem *commandSystem = new CommandSystem();
+    LoginProcess* login = new LoginProcess(*startingZone, *commandSystem);
     std::function<void(ClientAdapter*)> handler = std::bind(&LoginProcess::begin, login, std::placeholders::_1);
 
     TelnetProtocol *proto = new TelnetProtocol(4000);
