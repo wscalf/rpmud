@@ -18,6 +18,8 @@ class Room : public MUDObject
         void addLink(std::unique_ptr<Transition> transition);
         //Only intended for unit tests
         bool containsPlayer(UUID id);
+        std::shared_ptr<Player> findPlayer(std::string_view name);
+        MUDObject* findObject(std::string_view name);
         Room(UUID id);
     private:
          std::list<std::shared_ptr<Player>> players;

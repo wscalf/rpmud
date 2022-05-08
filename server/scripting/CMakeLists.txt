@@ -3,3 +3,6 @@ target_sources(objects
         CommandSystem.cpp
         Command.cpp
     )
+
+add_subdirectory(tests)
+add_subdirectory(builtin)

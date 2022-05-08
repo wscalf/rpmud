@@ -36,6 +36,28 @@ void Room::sendToAll(std::string message)
     }
 }
 
+std::shared_ptr<Player> Room::findPlayer(std::string_view name)
+{
+    for (auto i = players.begin(); i != players.end(); ++i)
+    {
+        if ((*i)->getName() == name)
+            return *i;
+    }
+
+    return nullptr;
+}
+
+MUDObject* Room::findObject(std::string_view name)
+{
+    for (auto i = transitions.begin(); i != transitions.end(); ++i)
+    {
+        if ((*i)->getName() == name)
+            return (*i).get();
+    }
+
+    return nullptr;
+}
+
 bool Room::containsPlayer(UUID id)
 {
     for (auto i = players.begin(); i != players.end(); ++i)
