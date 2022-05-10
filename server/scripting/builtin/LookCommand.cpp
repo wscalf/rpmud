@@ -3,6 +3,11 @@
 #include "world/Player.h"
 #include "world/Room.h"
 
+std::string LookCommand::getName() const
+{
+    return "look";
+}
+
 void LookCommand::innerExecute(std::shared_ptr<Player> player, const std::map<std::string, BoundParameter>& parameters)
 {
     MUDObject* target;
@@ -28,8 +33,6 @@ void LookCommand::innerExecute(std::shared_ptr<Player> player, const std::map<st
 
 void LookCommand::setUpParameterPattern()
 {
-    setName("look");
-
     parameterPattern.push_back(std::unique_ptr<Segment>(SegmentFactory::makeLiteral("at")));
     parameterPattern.push_back(std::unique_ptr<Segment>(SegmentFactory::makeShortText("name")));
 }

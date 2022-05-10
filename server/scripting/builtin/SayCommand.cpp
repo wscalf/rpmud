@@ -4,6 +4,11 @@
 #include "world/Player.h"
 #include "world/Room.h"
 
+std::string SayCommand::getName() const
+{
+    return "say";
+}
+
 void SayCommand::innerExecute(std::shared_ptr<Player> player, const std::map<std::string, BoundParameter>& parameters)
 {
     auto text = parameters.at("text")
@@ -22,7 +27,5 @@ void SayCommand::innerExecute(std::shared_ptr<Player> player, const std::map<std
 
 void SayCommand::setUpParameterPattern()
 {
-    setName("say");
-
     parameterPattern.push_back(std::unique_ptr<Segment>(SegmentFactory::makeFreeText("text", "Say what?")));
 }

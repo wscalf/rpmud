@@ -29,14 +29,19 @@ class TestCommand : public Command
 
 class VerbOnlyCommand : public TestCommand
 {
+    public:
+        std::string getName() const override
+        {
+            return "verb";
+        }
     protected:
         void innerExecute(std::shared_ptr<Player> player, const std::map<std::string, BoundParameter>& parameters) override
         {
             TestCommand::innerExecute(player, parameters);
         }
-        void setUpParameterPattern()
+        void setUpParameterPattern() override
         {
-            setName("verb");
+
         }
 };
 
@@ -55,6 +60,10 @@ TEST(command, verb_only)
 class OptionalMiddleCommand : public TestCommand
 {
     public:
+        std::string getName() const override
+        {
+            return "look";
+        }
         void expect(std::string value)
         {
             _expected = value;
@@ -69,7 +78,6 @@ class OptionalMiddleCommand : public TestCommand
         {
             parameterPattern.push_back(std::unique_ptr<Segment>(SegmentFactory::makeLiteral("at")));
             parameterPattern.push_back(std::unique_ptr<Segment>(SegmentFactory::makeShortText("name", "Look at what?")));
-            setName("look");
         }
     private:
         std::string _expected;

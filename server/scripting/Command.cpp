@@ -12,11 +12,6 @@ std::string Command::getName() const
     return _name;
 }
 
-void Command::setName(std::string name)
-{
-    _name = name;
-}
-
 void Command::init()
 {
     setUpParameterPattern();

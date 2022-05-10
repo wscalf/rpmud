@@ -60,12 +60,11 @@ class BoundParameter
 class Command
 {
     public:
-        std::string getName() const;
+        virtual std::string getName() const = 0;
         void init();
         void execute(std::shared_ptr<Player> player, std::string_view command);
     protected:
         virtual void innerExecute(std::shared_ptr<Player> player, const std::map<std::string, BoundParameter>& parameters) = 0;
-        void setName(std::string name);
         virtual void setUpParameterPattern() = 0;
         std::vector<std::unique_ptr<Segment>> parameterPattern;
     private:
