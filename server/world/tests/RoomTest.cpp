@@ -5,6 +5,7 @@
 #include "world/Room.h"
 #include "scripting/CommandSystem.h"
 #include "util/UUID.h"
+#include "scripting/builtin/SayCommand.h"
 
 #include <memory>
 
@@ -21,6 +22,7 @@ class RoomTest : public ::testing::Test
     void SetUp() override
     {
         comsys = new CommandSystem();
+        comsys->add(std::unique_ptr<Command>(new SayCommand()));
         
         playerAConnection = new FakeClientAdapter();
         playerA = std::make_shared<Player>(UUID::create(), "A", std::unique_ptr<ClientAdapter>(playerAConnection), *comsys);

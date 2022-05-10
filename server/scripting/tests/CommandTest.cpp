@@ -32,7 +32,6 @@ class VerbOnlyCommand : public TestCommand
     protected:
         void innerExecute(std::shared_ptr<Player> player, const std::map<std::string, BoundParameter>& parameters) override
         {
-            EXPECT_EQ("verb", parameters.at("cmd").getText());
             TestCommand::innerExecute(player, parameters);
         }
         void setUpParameterPattern()
@@ -81,17 +80,17 @@ TEST(command, optional_middle)
     CommandSystem cmds;
     auto player = std::make_shared<Player>(UUID::create(), std::string("name"), std::unique_ptr<ClientAdapter>(new FakeClientAdapter()), cmds);
     
-    auto cmd = OptionalMiddleCommand();
-    cmd.init();
+    auto cmd = new OptionalMiddleCommand();
+    cmds.add(std::unique_ptr<Command>(cmd));
 
-    cmd.expect("thing");
+    cmd->expect("thing");
     
-    cmd.execute(player, "look thing");
-    EXPECT_TRUE(cmd.wasExecuted());
-    cmd.reset();
+    cmds.execute(player, "look thing");
+    EXPECT_TRUE(cmd->wasExecuted());
+    cmd->reset();
 
-    cmd.execute(player, "look at thing");
-    EXPECT_TRUE(cmd.wasExecuted());
+    cmds.execute(player, "look at thing");
+    EXPECT_TRUE(cmd->wasExecuted());
 }
 
 TEST(command, quoted_value)
@@ -99,13 +98,13 @@ TEST(command, quoted_value)
     CommandSystem cmds;
     auto player = std::make_shared<Player>(UUID::create(), std::string("name"), std::unique_ptr<ClientAdapter>(new FakeClientAdapter()), cmds);
     
-    auto cmd = OptionalMiddleCommand();
-    cmd.init();
+    auto cmd = new OptionalMiddleCommand();
+    cmds.add(std::unique_ptr<Command>(cmd));
 
-    cmd.expect("the thing");
+    cmd->expect("the thing");
 
-    cmd.execute(player, "look at \"the thing\"");
-    EXPECT_TRUE(cmd.wasExecuted());
+    cmds.execute(player, "look at \"the thing\"");
+    EXPECT_TRUE(cmd->wasExecuted());
 }
 
 TEST(command, invalid_syntax)
@@ -113,9 +112,9 @@ TEST(command, invalid_syntax)
     CommandSystem cmds;
     auto player = std::make_shared<Player>(UUID::create(), std::string("name"), std::unique_ptr<ClientAdapter>(new FakeClientAdapter()), cmds);
     
-    auto cmd = OptionalMiddleCommand();
-    cmd.init();
+    auto cmd = new OptionalMiddleCommand();
+    cmds.add(std::unique_ptr<Command>(cmd));
     
-    cmd.execute(player, "look");
-    EXPECT_FALSE(cmd.wasExecuted());
+    cmds.execute(player, "look");
+    EXPECT_FALSE(cmd->wasExecuted());
 }

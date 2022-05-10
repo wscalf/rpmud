@@ -5,7 +5,11 @@
 #include "network/ClientAdapter.h"
 #include "world/Room.h"
 #include "world/LoginProcess.h"
+
 #include "scripting/CommandSystem.h"
+#include "scripting/builtin/SayCommand.h"
+#include "scripting/builtin/LookCommand.h"
+
 #include "util/UUID.h"
 
 #include "util/Log.h"
@@ -22,7 +26,11 @@ int main() {
     Log::init(LogLevel::INFO);
     Log::info("Starting up...");
     Room *startingZone = createWorld();
+    
     CommandSystem *commandSystem = new CommandSystem();
+    commandSystem->add(std::unique_ptr<Command>(new SayCommand()));
+    commandSystem->add(std::unique_ptr<Command>(new LookCommand()));
+
     LoginProcess* login = new LoginProcess(*startingZone, *commandSystem);
     std::function<void(ClientAdapter*)> handler = std::bind(&LoginProcess::begin, login, std::placeholders::_1);
 

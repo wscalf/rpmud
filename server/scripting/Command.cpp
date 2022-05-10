@@ -19,12 +19,10 @@ void Command::setName(std::string name)
 
 void Command::init()
 {
-    parameterPattern.push_back(std::unique_ptr<Segment>(SegmentFactory::makeShortText("cmd")));
-
     setUpParameterPattern();
 }
 
-void Command::execute(std::shared_ptr<Player> player, std::string command)
+void Command::execute(std::shared_ptr<Player> player, std::string_view command)
 {
     try
     {
@@ -37,11 +35,10 @@ void Command::execute(std::shared_ptr<Player> player, std::string command)
     }  
 }
 
-std::map<std::string, BoundParameter> Command::parseCommand(const std::string& command, Room* room) const
+std::map<std::string, BoundParameter> Command::parseCommand(std::string_view buffer, Room* room) const
 {
     std::smatch match;
     std::map<std::string, BoundParameter> params;
-    std::string_view buffer(command);
 
     for (auto i = parameterPattern.begin(); i != parameterPattern.end(); ++i)
     {

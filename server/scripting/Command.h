@@ -27,10 +27,10 @@ class Segment
         std::string name() const;
         std::string errorMsg() const;
         virtual ParseResult parseNext(std::string_view remaining) const = 0;
-        Segment(std::string name, std::string errMsg);
-    protected:
-        size_t findNextWhitespace(std::string_view remaining) const;
-        size_t findNextNonwhitespace(std::string_view remaining) const;
+        Segment(std::string name, std::string errMsg);    
+        protected:
+            size_t findNextWhitespace(std::string_view remaining) const;
+            size_t findNextNonwhitespace(std::string_view remaining) const;
     private:
         std::string _name;
         std::string _errMsg;
@@ -62,13 +62,13 @@ class Command
     public:
         std::string getName() const;
         void init();
-        void execute(std::shared_ptr<Player> player, std::string command);
+        void execute(std::shared_ptr<Player> player, std::string_view command);
     protected:
         virtual void innerExecute(std::shared_ptr<Player> player, const std::map<std::string, BoundParameter>& parameters) = 0;
         void setName(std::string name);
         virtual void setUpParameterPattern() = 0;
         std::vector<std::unique_ptr<Segment>> parameterPattern;
     private:
-        std::map<std::string, BoundParameter> parseCommand(const std::string& command, Room* room) const;
+        std::map<std::string, BoundParameter> parseCommand(std::string_view command, Room* room) const;
         std::string _name;
 };
