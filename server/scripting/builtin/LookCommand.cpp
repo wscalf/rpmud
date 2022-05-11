@@ -28,7 +28,14 @@ void LookCommand::innerExecute(std::shared_ptr<Player> player, const std::map<st
         target = player->getRoom();
     }
 
-    player->send(target->getName()); //Should be some variant of 'describe'
+    if (target)
+    {
+        player->send(target->describe());
+        if (otherPlayer)
+            otherPlayer->send(player->getName() + " looked at you.");
+    }
+    else
+        player->send("I don't see that here\n");
 }
 
 void LookCommand::setUpParameterPattern()

@@ -13,6 +13,7 @@ Player::Player(UUID id, std::string name, unique_ptr<ClientAdapter> adapter, Com
     _adapter->setDisconnectHandler([this]([[maybe_unused]]ClientAdapter* c) {this->onDisconnect();});
 
     setName(name);
+    setDescription("A player");
 
     Log::info("Player " + getName() + " connected", getSessionId());
 }

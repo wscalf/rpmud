@@ -1,11 +1,14 @@
 #include "world/Room.h"
+
+#include <sstream>
+
 #include "world/Player.h"
 #include "world/Transition.h"
 
 Room::Room(UUID id)
     : MUDObject(id)
 {
-
+    setDescription("A room");
 }
 
 void Room::add(std::shared_ptr<Player> player)
@@ -67,4 +70,22 @@ bool Room::containsPlayer(UUID id)
             return true;
     }
     return false;
+}
+
+std::string Room::describe()
+{
+    std::stringstream ret;
+
+    ret << getName() << std::endl;
+    ret << "----------------" << std::endl;
+    ret << getDescription() << std::endl;
+    ret << "----------------" << std::endl;
+    
+    ret << "Players:" << std::endl;
+    for (auto i = players.begin(); i != players.end(); ++i)
+        ret << (*i)->getName() << std::endl;
+
+    ret << "----------------" << std::endl;
+
+    return ret.str();
 }

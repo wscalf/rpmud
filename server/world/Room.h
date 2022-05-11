@@ -20,6 +20,7 @@ class Room : public MUDObject
         bool containsPlayer(UUID id);
         std::shared_ptr<Player> findPlayer(std::string_view name);
         MUDObject* findObject(std::string_view name);
+        std::string describe() override;
         Room(UUID id);
     private:
          std::list<std::shared_ptr<Player>> players;
