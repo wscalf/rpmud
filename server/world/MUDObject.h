@@ -9,11 +9,17 @@ class MUDObject
 
         std::string getName();
         void setName(std::string name);
+        
+        void setDescription(std::string description);
+        std::string getDescription();
+        virtual std::string describe();
 
         MUDObject(UUID id);
+        virtual ~MUDObject();
 
         bool operator==(const MUDObject& other);
     private:
-        UUID id;
-        std::string name;
+        UUID _id;
+        std::string _name;
+        std::string _description;
 };
