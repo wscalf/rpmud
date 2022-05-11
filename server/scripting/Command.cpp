@@ -26,7 +26,8 @@ void Command::execute(std::shared_ptr<Player> player, std::string_view command)
     }
     catch(const std::invalid_argument& e)
     {
-        Log::error(e.what(), player->getSessionId());
+        Log::debug(e.what(), player->getSessionId());
+        player->send("Error> " + std::string(e.what()));
     }  
 }
 

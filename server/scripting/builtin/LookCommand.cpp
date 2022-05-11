@@ -35,7 +35,7 @@ void LookCommand::innerExecute(std::shared_ptr<Player> player, const std::map<st
             otherPlayer->send(player->getName() + " looked at you.");
     }
     else
-        player->send("I don't see that here\n");
+        player->send("I don't see that here");
 }
 
 void LookCommand::setUpParameterPattern()

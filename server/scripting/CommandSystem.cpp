@@ -18,7 +18,9 @@ void CommandSystem::execute(std::shared_ptr<Player> player, std::string command)
     }
     else
     {
-        Log::info("Unrecognized command: " + keyword);
+        std::string error = "Unrecognized command: " + keyword;
+        Log::debug(error, player->getSessionId());
+        player->send(error);
     }
 }
 
