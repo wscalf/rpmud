@@ -2,7 +2,8 @@ add_subdirectory(tests)
 
 target_sources(objects
     PUBLIC
-        #DirectTransition.cpp
+        DirectTransition.cpp
+        Transition.cpp
         MUDObject.cpp
         Room.cpp
         LoginProcess.cpp

@@ -3,7 +3,7 @@
 #include "world/Player.h"
 #include "world/Room.h"
 
-std::string LookCommand::getName() const
+std::string LookCommand::getKeyword() const
 {
     return "look";
 }

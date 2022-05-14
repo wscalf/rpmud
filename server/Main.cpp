@@ -4,6 +4,7 @@
 #include "network/TelnetProtocol.h"
 #include "network/ClientAdapter.h"
 #include "world/Room.h"
+#include "world/DirectTransition.h"
 #include "world/LoginProcess.h"
 
 #include "scripting/CommandSystem.h"
@@ -19,6 +20,11 @@ using namespace std;
 Room* createWorld()
 {
     Room *start = new Room(UUID::create());
+    Room *overflow = new Room(UUID::create());
+    
+    start->addLink(std::unique_ptr<Transition>(new DirectTransition(UUID::create(), *start, *overflow, "Overflow", "o")));
+    overflow->addLink(std::unique_ptr<Transition>(new DirectTransition(UUID::create(), *overflow, *start, "Starting Room", "back")));
+
     return start;
 }
 

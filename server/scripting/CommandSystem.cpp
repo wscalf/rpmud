@@ -12,6 +12,17 @@ void CommandSystem::execute(std::shared_ptr<Player> player, std::string command)
     std::string_view buffer(command);
     auto keyword = std::string(drainKeyword(buffer));
 
+    auto room = player->getRoom();
+    if (room)
+    {
+        auto command = room->findLocalCommand(keyword);
+        if (command)
+        {
+            command->execute(player, buffer);
+            return;
+        }
+    }
+
     if (commands.count(keyword))
     {
         commands.at(keyword)->execute(player, buffer);
@@ -27,7 +38,7 @@ void CommandSystem::execute(std::shared_ptr<Player> player, std::string command)
 void CommandSystem::add(std::unique_ptr<Command> command)
 {
     command->init();
-    commands.insert_or_assign(command->getName(), std::move(command));
+    commands.insert_or_assign(command->getKeyword(), std::move(command));
 }
 
 std::string_view drainKeyword(std::string_view& buffer)

@@ -7,7 +7,7 @@
 #include "world/Player.h"
 #include "world/Room.h"
 
-std::string Command::getName() const
+std::string Command::getKeyword() const
 {
     return _name;
 }

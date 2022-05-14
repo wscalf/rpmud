@@ -4,7 +4,7 @@
 #include "world/Player.h"
 #include "world/Room.h"
 
-std::string SayCommand::getName() const
+std::string SayCommand::getKeyword() const
 {
     return "say";
 }
