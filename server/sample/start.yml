@@ -1,0 +1,19 @@
+---
+name: Start Room
+id: start
+description: The very first room, where everything begins!
+exits:
+  - name: Overflow
+    command: o
+    to: overflow
+---
+name: Overflow Room
+id: overflow
+description: A side room where you can steal away from the crowd in the start room!
+exits:
+  - name: Start
+    command: back
+    to: start
+
+#need new character entrypoint. Could be specified as part of login process?
+#also need makesafe room, a place to put characters with no valid location. This seems like a world property.
