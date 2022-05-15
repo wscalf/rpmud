@@ -30,7 +30,7 @@ class TestCommand : public Command
 class VerbOnlyCommand : public TestCommand
 {
     public:
-        std::string getName() const override
+        std::string getKeyword() const override
         {
             return "verb";
         }
@@ -60,7 +60,7 @@ TEST(command, verb_only)
 class OptionalMiddleCommand : public TestCommand
 {
     public:
-        std::string getName() const override
+        std::string getKeyword() const override
         {
             return "look";
         }

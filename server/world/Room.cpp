@@ -16,6 +16,8 @@ void Room::add(std::shared_ptr<Player> player)
     sendToAll(player->getName() + " joined");
     players.push_back(player);
     player->setRoom(this);
+
+    player->send(describe());
 }
 
 void Room::remove(std::shared_ptr<Player> player)
@@ -39,6 +41,18 @@ void Room::sendToAll(std::string message)
     }
 }
 
+Command* Room::findLocalCommand(std::string_view name)
+{
+    //NOTE: if this room is destroyed while a command is in progress, we'll have a dangling pointer
+    for (auto i = transitions.begin(); i != transitions.end(); ++i)
+    {
+        if ((*i)->getKeyword() == name)
+            return (*i).get();
+    }
+
+    return nullptr;
+}
+
 std::shared_ptr<Player> Room::findPlayer(std::string_view name)
 {
     for (auto i = players.begin(); i != players.end(); ++i)
@@ -54,7 +68,7 @@ MUDObject* Room::findObject(std::string_view name)
 {
     for (auto i = transitions.begin(); i != transitions.end(); ++i)
     {
-        if ((*i)->getName() == name)
+        if ((*i)->getName() == name || (*i)->getKeyword() == name)
             return (*i).get();
     }
 
@@ -85,6 +99,11 @@ std::string Room::describe()
     for (auto i = players.begin(); i != players.end(); ++i)
         ret << (*i)->getName() << std::endl;
 
+    ret << "----------------" << std::endl;
+
+    ret << "Exits:" << std::endl;
+    for (auto i = transitions.begin(); i != transitions.end(); ++i)
+        ret << (*i)->getName() << " [" << (*i)->getKeyword() << "]" << std::endl;
     ret << "----------------" << std::endl;
 
     return ret.str();

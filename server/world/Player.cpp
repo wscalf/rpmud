@@ -7,7 +7,7 @@
 #include "util/Log.h"
 
 Player::Player(UUID id, std::string name, unique_ptr<ClientAdapter> adapter, CommandSystem& commands)
-    : MUDObject(id), _commandSystem {commands}, _adapter {std::move(adapter)}
+    : MUDObject(id), _commandSystem {commands}, _adapter {std::move(adapter)}, _room {nullptr}
 {   
     _adapter->setCommandHandler(std::bind(&Player::onCommand, this, std::placeholders::_1));
     _adapter->setDisconnectHandler([this]([[maybe_unused]]ClientAdapter* c) {this->onDisconnect();});

@@ -29,7 +29,7 @@ class BoundParameter
 class Command
 {
     public:
-        virtual std::string getName() const = 0;
+        virtual std::string getKeyword() const = 0;
         void init();
         void execute(std::shared_ptr<Player> player, std::string_view command);
     protected:
