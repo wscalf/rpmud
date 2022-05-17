@@ -7,6 +7,8 @@
 
 void World::load(const std::string directory)
 {
+    //Need a way to complete transitions as rooms are loaded - maybe a multimap from the room being linked to to transitions?
+    //Transition could be updated so it can be created and bound to a target in two steps, and the room can be assigned the transition as soon as it's made
     populateGlobalProperties(directory + "/world.yml");
 
     for (const auto& entry : std::filesystem::recursive_directory_iterator(directory + "/rooms"))
