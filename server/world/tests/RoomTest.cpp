@@ -30,7 +30,7 @@ class RoomTest : public ::testing::Test
         playerBConnection = new FakeClientAdapter();
         playerB = std::make_shared<Player>(UUID::create(), "B", std::unique_ptr<ClientAdapter>(playerBConnection), *comsys);
 
-        room = new Room(UUID::create());
+        room = new Room(UUID::create(), "room");
     }
 
     void TearDown() override
@@ -67,7 +67,7 @@ TEST_F(RoomTest, disconnected_players_are_removed)
 
     playerAConnection->disconnect();
 
-    EXPECT_FALSE(room->containsPlayer(playerA->getId()));
+    EXPECT_FALSE(room->findPlayer(playerA->getName()));
 }
 
 TEST_F(RoomTest, other_players_are_notified_of_dcs)

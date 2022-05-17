@@ -8,4 +8,5 @@ target_sources(objects
         Room.cpp
         LoginProcess.cpp
         Player.cpp
+        World.cpp
     )

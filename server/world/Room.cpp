@@ -5,10 +5,10 @@
 #include "world/Player.h"
 #include "world/Transition.h"
 
-Room::Room(UUID id)
-    : MUDObject(id)
+Room::Room(UUID id, const std::string roomId)
+    : MUDObject(id), _roomId {roomId}
 {
-    setDescription("A room");
+
 }
 
 void Room::add(std::shared_ptr<Player> player)
@@ -73,17 +73,6 @@ MUDObject* Room::findObject(std::string_view name)
     }
 
     return nullptr;
-}
-
-bool Room::containsPlayer(UUID id)
-{
-    for (auto i = players.begin(); i != players.end(); ++i)
-    {
-        auto player = *i;
-        if (player->getId() == id)
-            return true;
-    }
-    return false;
 }
 
 std::string Room::describe()

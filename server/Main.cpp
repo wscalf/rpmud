@@ -3,6 +3,7 @@
 
 #include "network/TelnetProtocol.h"
 #include "network/ClientAdapter.h"
+#include "world/World.h"
 #include "world/Room.h"
 #include "world/DirectTransition.h"
 #include "world/LoginProcess.h"
@@ -17,27 +18,20 @@
 
 using namespace std;
 
-Room* createWorld()
-{
-    Room *start = new Room(UUID::create());
-    Room *overflow = new Room(UUID::create());
-    
-    start->addLink(std::unique_ptr<Transition>(new DirectTransition(UUID::create(), *start, *overflow, "Overflow", "o")));
-    overflow->addLink(std::unique_ptr<Transition>(new DirectTransition(UUID::create(), *overflow, *start, "Starting Room", "back")));
-
-    return start;
-}
-
 int main() {
     Log::init(LogLevel::INFO);
     Log::info("Starting up...");
-    Room *startingZone = createWorld();
+    
+    World* world = new World();
+    world->load("sample");
+    Log::info("World loaded.");
+    Room& startingZone = world->getStartingRoom();
     
     CommandSystem *commandSystem = new CommandSystem();
     commandSystem->add(std::unique_ptr<Command>(new SayCommand()));
     commandSystem->add(std::unique_ptr<Command>(new LookCommand()));
 
-    LoginProcess* login = new LoginProcess(*startingZone, *commandSystem);
+    LoginProcess* login = new LoginProcess(startingZone, *commandSystem);
     std::function<void(ClientAdapter*)> handler = std::bind(&LoginProcess::begin, login, std::placeholders::_1);
 
     TelnetProtocol *proto = new TelnetProtocol(4000);

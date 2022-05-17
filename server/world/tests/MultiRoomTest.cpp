@@ -32,8 +32,8 @@ class MultiRoomTest : public testing::Test
         playerBConnection = new FakeClientAdapter();
         playerB = std::make_shared<Player>(UUID::create(), "B", std::unique_ptr<ClientAdapter>(playerBConnection), *comsys);
 
-        roomA = new Room(UUID::create());
-        roomB = new Room(UUID::create());
+        roomA = new Room(UUID::create(), "A");
+        roomB = new Room(UUID::create(), "B");
 
         roomA->addLink(std::unique_ptr<Transition>(new DirectTransition(UUID::create(), *roomA, *roomB, "Cross", "go")));
         roomB->addLink(std::unique_ptr<Transition>(new DirectTransition(UUID::create(), *roomB, *roomA, "Cross", "go")));
