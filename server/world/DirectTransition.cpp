@@ -1,6 +1,7 @@
 #include "world/DirectTransition.h"
 
 #include "world/Room.h"
+#include "world/Constants.h"
 
 DirectTransition::DirectTransition(UUID id, Room& from, std::string name, std::string command)
     : Transition(id, from, name, command)
@@ -23,7 +24,7 @@ std::string DirectTransition::describe()
     std::stringstream ret;
     ret << MUDObject::describe();
 
-    if (_to && hasTag("TRANSPARENT"))
+    if (_to && hasTag(Tags::Transparent))
         ret << _to->describe();
 
     return ret.str();
