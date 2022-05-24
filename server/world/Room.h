@@ -20,6 +20,7 @@ class Room : public MUDObject
         Command* findLocalCommand(std::string_view keyword);
         MUDObject* findObject(std::string_view name);
         std::string describe() override;
+        std::string getRoomId();
         Room(UUID id, const std::string roomId);
     private:
         std::string _roomId;

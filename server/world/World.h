@@ -4,6 +4,7 @@
 #include <map>
 
 class Room;
+class DirectTransition;
 
 class World
 {
@@ -17,7 +18,7 @@ class World
         std::string getName() const;
     private:
         void populateGlobalProperties(const std::string& filePath);
-        void populateRoomsFromFile(const std::string& filePath);
+        void populateRoomsFromFile(const std::string& filePath, std::multimap<std::string, DirectTransition&>& openTransitions);
         std::string _startRoomId;
         std::string _safeRoomId;
         std::string _name;

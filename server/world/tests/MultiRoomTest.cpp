@@ -35,8 +35,13 @@ class MultiRoomTest : public testing::Test
         roomA = new Room(UUID::create(), "A");
         roomB = new Room(UUID::create(), "B");
 
-        roomA->addLink(std::unique_ptr<Transition>(new DirectTransition(UUID::create(), *roomA, *roomB, "Cross", "go")));
-        roomB->addLink(std::unique_ptr<Transition>(new DirectTransition(UUID::create(), *roomB, *roomA, "Cross", "go")));
+        auto transition = new DirectTransition(UUID::create(), *roomA, "Cross", "go");
+        transition->setDestination(roomB);
+        roomA->addLink(std::unique_ptr<Transition>(transition));
+
+        transition = new DirectTransition(UUID::create(), *roomB, "Cross", "go");
+        transition->setDestination(roomA);
+        roomB->addLink(std::unique_ptr<Transition>(transition));
     }
 
     void TearDown() override

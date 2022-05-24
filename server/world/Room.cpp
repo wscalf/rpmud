@@ -75,6 +75,11 @@ MUDObject* Room::findObject(std::string_view name)
     return nullptr;
 }
 
+std::string Room::getRoomId()
+{
+    return _roomId;
+}
+
 std::string Room::describe()
 {
     std::stringstream ret;

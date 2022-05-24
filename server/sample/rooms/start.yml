@@ -10,14 +10,11 @@ exits:
 ---
 name: Overflow Room
 id: overflow
-description: A side room where you can steal away from the crowd in the start room!
+description: A "side room" where you can steal away from the crowd in the start room!
 exits:
   - name: Start
     description: A black curtain hangs over the doorway back to the main room. Peeking beyond it reveals..
     command: back
-    flags: 
+    tags: 
       - TRANSPARENT #When examined, it will include the description of the linked room
     to: initial
-
-#need new character entrypoint. Could be specified as part of login process?
-#also need makesafe room, a place to put characters with no valid location. This seems like a world property.
