@@ -37,6 +37,11 @@ bool FakeClientAdapter::hasReceivedOutputContaining(std::string sample)
     return hasReceivedOutput([sample] (std::string s) {return s.find(sample) != std::string::npos;});
 }
 
+void FakeClientAdapter::clearOutput()
+{
+    outputs.clear();
+}
+
 FakeClientAdapter::~FakeClientAdapter()
 {
 
