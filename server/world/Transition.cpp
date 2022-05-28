@@ -13,6 +13,11 @@ std::string Transition::getKeyword() const
     return _command;
 }
 
+Room& Transition::getFrom() const
+{
+    return _from;
+}
+
 void Transition::activate(std::shared_ptr<Player> player)
 {
     innerActivate(player);

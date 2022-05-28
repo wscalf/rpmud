@@ -33,6 +33,7 @@ target_link_libraries(rpmud
         telnet #move to network, requires libtelnet install
         event #may require libevent install - libevent was already on my system, but the headers were not. There is also a libevent_core that may have all we need
         uuid #depends on the uuid-dev package, can be statically linked
+        yaml-cpp
     )
 
 target_link_libraries(rpmud_tests
@@ -41,6 +42,7 @@ target_link_libraries(rpmud_tests
         telnet
         event
         uuid
+        yaml-cpp
         gtest #test library, compiled from googletest submodule
     )
 

@@ -1,0 +1,20 @@
+---
+name: Start Room
+id: initial
+description: The very first room, where everything begins!
+exits:
+  - name: Overflow
+    description: A black curtain hangs over a doorway to the overflow room
+    command: o
+    to: overflo
+---
+name: Overflow Room
+id: overflow
+description: A "side room" where you can steal away from the crowd in the start room!
+exits:
+  - name: Start
+    description: A black curtain hangs over the doorway back to the main room. Peeking beyond it reveals..
+    command: back
+    tags: 
+      - TRANSPARENT
+    to: initial
