@@ -1,20 +1,46 @@
 ---
-name: Start Room
+name: Stage 07 Lounge
 id: initial
-description: The very first room, where everything begins!
+description: A small room with a handful of old plush chairs, well used but not especially looked-after, a refreshments table with a selection of stale pastries, watered down fruit juices, and blessedly hot coffee. The stale smell of cigarettes hangs in the air.
 exits:
-  - name: Overflow
-    description: A black curtain hangs over a doorway to the overflow room
-    command: o
-    to: overflow #detect/specify reciprocal exits?
----
-name: Overflow Room
-id: overflow
-description: A "side room" where you can steal away from the crowd in the start room!
-exits:
-  - name: Start
-    description: A black curtain hangs over the doorway back to the main room. Peeking beyond it reveals..
-    command: back
+  - name: Stage
+    description: A plain white doorway with a criss-crossed security glass window and a big sign in flecked red and white paint that says "STAGE" in block capitals over it. 
+    command: s
     tags: 
-      - TRANSPARENT #When examined, it will include the description of the linked room
+      - TRANSPARENT
+    to: stage
+  - name: Backstage Hallway
+    description: A side door back into the hallways that connect the presenter areas.
+    command: b
+    to: hall
+---
+name: Backstage Hallway
+id: hall
+description: A dirty beige hallway that was likely white once snakes through the backstage areas allowing presenters and staff to move between them without crossing the guest areas.
+exits:
+  - name: Backstage
+    description: A door labeled "Stage 07 Lounge"
+    command: b
     to: initial
+  - name: Overflow
+    description: A door labeled "Stage 07 Overflow" around the corner
+    command: o
+    to: overflow
+---
+name: Stage 07
+id: stage
+description: A wide wood-paneled stage with two large flatscreen monitors for showing slides and row after row of clean and comfortable-looking stadium seating
+exits:
+  - name: Backstage
+    description: A door at the back right of the stage with a small sign that says "Not an Exit"
+    command: b
+    to: initial
+---
+name: Stage 07 Overflow
+id: overflow
+description: A medium-sized space with a classroom feel - scruffy nylon carpet, pastel wallpaper, whiteboards, and a refreshment table with a variety of fresh donuts, coffees, and such.
+exits:
+  - name: Backstage Hallway
+    description: A beige door with crisscrossed security glass, an "Employees Only" sign, and badge reader.
+    command: b
+    to: hall
