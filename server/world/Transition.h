@@ -13,6 +13,7 @@ class Transition : public MUDObject, public Command
         virtual void innerActivate(std::shared_ptr<Player> player) = 0;
         std::string getKeyword() const override;
         virtual bool hasTag(std::string tag) = 0;
+        Room& getFrom() const;
         Transition(UUID id, Room& from, std::string name, std::string command);
     protected:
         void innerExecute(std::shared_ptr<Player> player, const std::map<std::string, BoundParameter>& parameters) override;

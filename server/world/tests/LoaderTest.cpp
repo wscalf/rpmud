@@ -36,7 +36,7 @@ class LoaderTest : public testing::Test
 
 TEST_F(LoaderTest, load_and_explore)
 {
-    world->load("sample");
+    world->load("sample/basic");
 
     Room& start = world->getStartingRoom();
     start.add(player);
@@ -58,4 +58,9 @@ TEST_F(LoaderTest, load_and_explore)
 
     EXPECT_TRUE(client->hasReceivedOutputContaining("Peeking beyond it reveals..")); //Sample from the description of the transition
     EXPECT_TRUE(client->hasReceivedOutputContaining(start.getDescription())); //Sample from the description of the start room
+}
+
+TEST_F(LoaderTest, load_broken_link)
+{
+    EXPECT_THROW(world->load("sample/broken_link"), std::domain_error);
 }

@@ -22,23 +22,30 @@ int main() {
     Log::init(LogLevel::INFO);
     Log::info("Starting up...");
     
-    World* world = new World();
-    world->load("sample");
-    Log::info("World loaded.");
-    Room& startingZone = world->getStartingRoom();
+    try 
+    {
+        World* world = new World();
+        world->load("sample/exhibition");
+        Log::info("World loaded.");
     
-    CommandSystem *commandSystem = new CommandSystem();
-    commandSystem->add(std::unique_ptr<Command>(new SayCommand()));
-    commandSystem->add(std::unique_ptr<Command>(new LookCommand()));
+        Room& startingZone = world->getStartingRoom();
+        
+        CommandSystem *commandSystem = new CommandSystem();
+        commandSystem->add(std::unique_ptr<Command>(new SayCommand()));
+        commandSystem->add(std::unique_ptr<Command>(new LookCommand()));
 
-    LoginProcess* login = new LoginProcess(startingZone, *commandSystem);
-    std::function<void(ClientAdapter*)> handler = std::bind(&LoginProcess::begin, login, std::placeholders::_1);
+        LoginProcess* login = new LoginProcess(startingZone, *commandSystem);
+        std::function<void(ClientAdapter*)> handler = std::bind(&LoginProcess::begin, login, std::placeholders::_1);
 
-    TelnetProtocol *proto = new TelnetProtocol(4000);
-    proto->setConnectionHandler(handler);
-    proto->Start();
+        auto proto = std::unique_ptr<ClientProtocol>(new TelnetProtocol(4000));
+        proto->setConnectionHandler(handler);
+        proto->Start();
+    }
+    catch (std::exception& e)
+    {
+        Log::fatal("Unhandled exception: " + std::string(e.what()));
+    }
 
-    Log::info("Shutting down"); //Might need some way to hold it open until all logs are written. Does this get shown?
-    delete proto;
+    Log::info("Shutting down");
 }
 

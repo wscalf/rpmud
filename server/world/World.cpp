@@ -19,9 +19,10 @@ void World::load(const std::string directory)
     
     if (!openTransitions.empty()) {
         for (const auto& it : openTransitions)
-            Log::fatal("Exit bound to an undefined room! Room id: " + it.first);
+            Log::error("Exit [" + it.second.getName() + "] from room [" + it.second.getFrom().getName() + "], bound to an undefined room id: " + it.first);
+        
+        throw domain_error("One or more exits were bound to an undefined room. See previous errors for details.");
     }
-    //Should assert there are no open transitions left - these could result in undefined behavior
 }
 
 Room& World::getStartingRoom() const
@@ -84,7 +85,7 @@ void World::populateRoomsFromFile(const std::string& filePath, std::multimap<std
                 for (const auto& tag : exit["tags"])
                     transition->addTag(tag.as<std::string>());
 
-            std::string to = exit["to"].as<std::string>(); //If an element is missing, it throws InvalidNode. Can also query whether an element exists without the .as
+            std::string to = exit["to"].as<std::string>();
             
             room->addLink(std::unique_ptr<Transition>(transition));
             auto other = find(to);
@@ -93,11 +94,13 @@ void World::populateRoomsFromFile(const std::string& filePath, std::multimap<std
             else
                 openTransitions.insert({to, *transition});
 
-            while (openTransitions.count(room->getRoomId())) //The binary search method from here is probably faster: https://www.geeksforgeeks.org/traverse-values-given-key-multimap/
+            auto current = openTransitions.lower_bound(room->getRoomId());
+            auto end = openTransitions.upper_bound(room->getRoomId());
+            while (current != end)
             {
-                const auto& pair = openTransitions.find(room->getRoomId());
-                pair->second.setDestination(room);
-                openTransitions.erase(pair);
+                const auto pair = *current;
+                pair.second.setDestination(room);
+                openTransitions.erase(current++);
             }
         }
     }
