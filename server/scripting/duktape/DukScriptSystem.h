@@ -6,7 +6,7 @@ class DukScriptSystem : public ScriptSystem
 {
     public:
         DukScriptSystem();
-        void initialize() override;
+        void initialize(CommandSystem *commandSystem) override;
         virtual void load_module(std::string filePath) override;
         ScriptObject* create_object(std::string type) override;
         ~DukScriptSystem();

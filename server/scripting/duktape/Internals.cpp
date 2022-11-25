@@ -1,4 +1,7 @@
+#include "scripting/duktape/DukScriptSystem.h"
 #include "scripting/duktape/Internals.h"
+#include "scripting/ScriptCommand.h"
+#include "scripting/CommandSystem.h"
 #include "util/Log.h"
 
 int log_debug(duk_context *ctx)
@@ -37,6 +40,18 @@ int log_fatal(duk_context *ctx)
 {
     std::string message = duk_get_string(ctx, 0);
     Log::fatal(message);
+
+    return 0;
+}
+
+int register_command(duk_context *ctx)
+{
+    std::string typeName = duk_get_string(ctx, 0);
+    std::string keyword = duk_get_string(ctx, 1);
+
+    auto cmd = new ScriptCommand(typeName, *g_scriptSystem);
+    cmd->setKeyword(keyword);
+    g_commandSystem->add(std::unique_ptr<Command>(cmd));
 
     return 0;
 }

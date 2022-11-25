@@ -4,7 +4,11 @@
 #include "scripting/duktape/DukScriptSystem.h"
 #include "scripting/duktape/DukScriptObject.h"
 #include "scripting/duktape/Internals.h"
+#include "scripting/CommandSystem.h"
 #include "duk/duktape.h"
+
+CommandSystem* g_commandSystem;
+DukScriptSystem* g_scriptSystem;
 
 std::string load_script(std::string filename);
 
@@ -13,13 +17,16 @@ DukScriptSystem::DukScriptSystem()
     
 }
 
-void DukScriptSystem::initialize()
+void DukScriptSystem::initialize(CommandSystem* commandSystem)
 {
     this->ctx = duk_create_heap_default();
     if (!this->ctx)
         throw std::domain_error("Failed to initialize duk heap.");
 
     //Set up C function bindings (internal)
+    g_scriptSystem = this;
+    g_commandSystem = commandSystem;
+
     create_internal_namespace();
     //Load core module
     load_module("core.js");

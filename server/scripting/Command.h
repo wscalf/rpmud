@@ -38,5 +38,4 @@ class Command
         std::vector<std::unique_ptr<Segment>> parameterPattern;
     private:
         std::map<std::string, BoundParameter> parseCommand(std::string_view command, Room* room) const;
-        std::string _name;
 };

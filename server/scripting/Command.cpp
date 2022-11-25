@@ -7,11 +7,6 @@
 #include "world/Player.h"
 #include "world/Room.h"
 
-std::string Command::getKeyword() const
-{
-    return _name;
-}
-
 void Command::init()
 {
     setUpParameterPattern();

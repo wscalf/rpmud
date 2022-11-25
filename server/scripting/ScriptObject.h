@@ -16,7 +16,7 @@ class ScriptObject
         virtual float get_number(std::string field) = 0;
 
         
-        virtual Variant call(std::string method, std::initializer_list<Variant> args) = 0;
+        virtual Variant call(std::string method, std::initializer_list<Variant> args = {}) = 0;
 
         virtual ~ScriptObject() = 0;
 };

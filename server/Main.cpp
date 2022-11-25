@@ -25,18 +25,21 @@ int main() {
     
     try 
     {
+        CommandSystem *commandSystem = new CommandSystem();
+        commandSystem->add(std::unique_ptr<Command>(new SayCommand()));
+        commandSystem->add(std::unique_ptr<Command>(new LookCommand()));
+
         ScriptSystem* scripting = new DukScriptSystem();
-        scripting->initialize();
+        scripting->initialize(commandSystem);
         Log::info("Script system initialized.");
+        scripting->load_module("sample/exhibition/mud.js");
+        Log::info("User code loaded.");
         World* world = new World();
         world->load("sample/exhibition");
         Log::info("World loaded.");
     
         Room& startingZone = world->getStartingRoom();
         
-        CommandSystem *commandSystem = new CommandSystem();
-        commandSystem->add(std::unique_ptr<Command>(new SayCommand()));
-        commandSystem->add(std::unique_ptr<Command>(new LookCommand()));
 
         LoginProcess* login = new LoginProcess(startingZone, *commandSystem);
         std::function<void(ClientAdapter*)> handler = std::bind(&LoginProcess::begin, login, std::placeholders::_1);

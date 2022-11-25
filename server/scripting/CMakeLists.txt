@@ -1,5 +1,7 @@
 target_sources(objects
     PUBLIC
+        ScriptCommand.h
+        ScriptCommand.cpp
         ScriptSystem.cpp
         ScriptObject.cpp
         CommandSystem.cpp

@@ -3,12 +3,13 @@
         "noImplicitAny": true,
         "removeComments": true,
         "preserveConstEnums": true,
-        "outFile": "core.js",
+        "outFile": "mud.js",
         "sourceMap": false,
         "inlineSourceMap": false,
         "declaration": true,
         "target": "ES5",
+        "experimentalDecorators": true,
         "module": "none"
     },
-    "exclude": ["core.*"]
+    "exclude": ["mud.*"]
 }
