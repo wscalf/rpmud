@@ -27,6 +27,7 @@ int main() {
     {
         ScriptSystem* scripting = new DukScriptSystem();
         scripting->initialize();
+        Log::info("Script system initialized.");
         World* world = new World();
         world->load("sample/exhibition");
         Log::info("World loaded.");

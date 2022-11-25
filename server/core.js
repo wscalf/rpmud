@@ -31,6 +31,7 @@ var Log = (function () {
     };
     return Log;
 }());
+Log.Info("Hello, world!");
 var MUDObject = (function () {
     function MUDObject() {
     }
