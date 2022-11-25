@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "outFile": "../server/core.js",
+        "sourceMap": false,
+        "inlineSourceMap": false,
+        "declaration": true,
+        "target": "ES5",
+        "module": "amd"
+    }
+}

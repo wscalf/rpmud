@@ -1,0 +1,9 @@
+target_sources(objects
+    PUBLIC
+        DukScriptSystem.h
+        DukScriptSystem.cpp
+        DukScriptObject.h
+        DukScriptObject.cpp
+        Internals.h
+        Internals.cpp
+    )

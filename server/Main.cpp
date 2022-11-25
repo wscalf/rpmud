@@ -8,6 +8,7 @@
 #include "world/DirectTransition.h"
 #include "world/LoginProcess.h"
 
+#include "scripting/duktape/DukScriptSystem.h"
 #include "scripting/CommandSystem.h"
 #include "scripting/builtin/SayCommand.h"
 #include "scripting/builtin/LookCommand.h"
@@ -24,6 +25,8 @@ int main() {
     
     try 
     {
+        ScriptSystem* scripting = new DukScriptSystem();
+        scripting->initialize();
         World* world = new World();
         world->load("sample/exhibition");
         Log::info("World loaded.");

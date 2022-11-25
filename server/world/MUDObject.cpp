@@ -38,8 +38,29 @@ std::string MUDObject::describe()
     return ret.str();
 }
 
+bool MUDObject::hasScript()
+{
+    return this->script != nullptr;
+}
+
+void MUDObject::attachScript(ScriptObject *script)
+{
+    if (this->hasScript())
+        throw std::domain_error("A script is already present on object: " + _name);
+
+    this->script = std::unique_ptr<ScriptObject>(script);
+}
+
+ScriptObject* MUDObject::getScript()
+{
+    if (!this->hasScript())
+        throw std::domain_error("No script is present on object: " + _name);
+
+    return this->script.get();
+}
+
 MUDObject::MUDObject(UUID id)
-    : _id {id}
+    : script {nullptr}, _id {id}
 {
 
 }
