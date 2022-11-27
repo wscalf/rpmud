@@ -3,12 +3,23 @@
 #include "scripting/duktape/DukScriptObject.h"
 #include "world/MUDObject.h"
 #include "scripting/Variant.h"
+#include <iostream>
+#include <cassert>
 
 void* extract_duk_ptr(MUDObject* object);
 Variant get_from_context(duk_context *ctx, duk_idx_t idx);
 
+#define ASSERT_EMPTY assert (duk_get_top(this->ctx) == 0);
+
+void dump_stack(duk_context *ctx)
+{
+    duk_push_context_dump(ctx);
+    std::cout << duk_get_string(ctx, -1) << std::endl;
+    duk_pop(ctx);
+}
+
 DukScriptObject::DukScriptObject(duk_context *ctx, std::string type)
-    : ctx {ctx}, id {UUID::create()}
+    : ctx {ctx}, id {UUID::create()}, _type {type}
 {
     //Get constructor from global context
     duk_push_global_stash(this->ctx);
@@ -23,6 +34,7 @@ DukScriptObject::DukScriptObject(duk_context *ctx, std::string type)
     duk_put_prop_string(this->ctx, 0, this->id.toStr().c_str());
     
     pop(); //Pop global stash
+    ASSERT_EMPTY;
 }
 
 void* DukScriptObject::get_reference()
@@ -30,74 +42,56 @@ void* DukScriptObject::get_reference()
     return this->duk_obj;
 }
 
-void DukScriptObject::set(std::string field, MUDObject *object)
+void DukScriptObject::set(std::string field, Variant value)
 {
-
-    auto ptr = extract_duk_ptr(object);
-
     push_this();
-    duk_push_string(this->ctx, field.c_str());
+
+    duk_push_string(this->ctx, field.c_str()); //From push_this to pop could be broken out into a helper function for bulk sets
     
-    duk_push_heapptr(this->ctx, ptr);
+    switch (value.getType())
+    {
+        case Variant::Text:
+            duk_push_string(this->ctx, value.text().c_str());
+            break;
+        case Variant::Number:
+            duk_push_number(this->ctx, value.number());
+            break;
+        case Variant::Boolean:
+            duk_push_boolean(this->ctx, value.flag());
+            break;
+        case Variant::Object:
+            //TODO: implement this
+            break;
+        case Variant::Empty:
+            duk_push_null(this->ctx);
+            break;
+    }
     
     duk_put_prop(this->ctx, 0);
 
     pop(); //Pop this
+
+    ASSERT_EMPTY;
 }
 
-void DukScriptObject::set(std::string field, std::string text) 
+Variant DukScriptObject::get(std::string field) 
 {
+    Variant ret;
+
     push_this();
-    duk_push_string(this->ctx, field.c_str());
-    
-    duk_push_string(this->ctx, text.c_str());
-
-    duk_put_prop(this->ctx, 0);
-
-    pop(); //Pop this
-}
-
-void DukScriptObject::set(std::string field, float number)         
-{
-    push_this();
-    duk_push_string(this->ctx, field.c_str());
-    
-    duk_push_number(this->ctx, number);
-
-    duk_put_prop(this->ctx, 0);
-
-    pop(); //Pop this
-}
-
-MUDObject* DukScriptObject::get_object([[maybe_unused]] std::string field) 
-{
-    return nullptr; //Requires the item in JS memory to have a pointer back to its object
-}
-
-std::string DukScriptObject::get_text(std::string field) 
-{
-    push_this();
-    duk_push_string(this->ctx, field.c_str());
-    duk_get_prop(this->ctx, 0);
-
-    std::string ret = duk_get_string(this->ctx, 1);
-
-    pop(); //Pop string
+    duk_get_prop_string(this->ctx, 0, field.c_str());
+    if (duk_is_undefined(this->ctx, -1))
+    {
+        pop(); //Pop value
+        pop(); //Pop this
+        ASSERT_EMPTY;
+        throw std::domain_error("Unrecognized property " + field + " of type: " + _type);
+    }
+    ret = get_from_context(this->ctx, -1);
+    pop(); //Pop value
     pop(); //Pop this
 
-    return ret;
-}
-
-float DukScriptObject::get_number(std::string field)
-{
-    push_this();
-    duk_push_string(this->ctx, field.c_str());
-    duk_get_prop(this->ctx, 0);
-
-    float ret = duk_get_number(this->ctx, 1);
-
-    pop(); //Pop number
-    pop(); //Pop this
+    ASSERT_EMPTY;
 
     return ret;
 }
@@ -112,34 +106,38 @@ Variant DukScriptObject::call(std::string method, std::initializer_list<Variant>
 
     for (auto& param : args)
     {
-        switch (param.type)
+        switch (param.getType())
         {
             case param.Object:
-                duk_push_heapptr(this->ctx, extract_duk_ptr(param.object));
+                duk_push_heapptr(this->ctx, extract_duk_ptr(param.object()));
                 break;
             case param.Empty:
                 duk_push_null(this->ctx);
                 break;
             case param.Text:
-                duk_push_string(this->ctx, param.text.c_str());
+                duk_push_string(this->ctx, param.text().c_str());
                 break;
             case param.Number:
-                duk_push_number(this->ctx, param.number);
+                duk_push_number(this->ctx, param.number());
                 break;
             case param.Boolean:
-                duk_push_boolean(this->ctx, param.flag);
+                duk_push_boolean(this->ctx, param.flag());
                 break;
         }
 
         num_args++;
     }
 
+    dump_stack(this->ctx);
     duk_call_prop(this->ctx, 0, num_args);
+    dump_stack(this->ctx);
 
     auto ret = get_from_context(this->ctx, 1);
 
     pop(); //Pop return value
     pop(); //Pop this
+
+    ASSERT_EMPTY;
 
     return ret;
 }
@@ -186,3 +184,4 @@ void* extract_duk_ptr(MUDObject* object)
 
     return script->get_reference();
 }
+

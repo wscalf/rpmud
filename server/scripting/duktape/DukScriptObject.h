@@ -14,12 +14,8 @@ class DukScriptObject : public ScriptObject
         
         void* get_reference();
 
-        void set(std::string field, MUDObject *object) override;
-        void set(std::string field, std::string text) override;
-        void set(std::string field, float number) override;        
-        MUDObject* get_object(std::string field) override;
-        std::string get_text(std::string field) override;
-        float get_number(std::string field) override;
+        void set(std::string field, Variant value) override;
+        Variant get(std::string field) override;
 
         virtual Variant call(std::string method, std::initializer_list<Variant> args) override;
         ~DukScriptObject();
@@ -28,5 +24,6 @@ class DukScriptObject : public ScriptObject
         void pop();
         duk_context *ctx;
         UUID id;
+        std::string _type;
         void *duk_obj;
 };

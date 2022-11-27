@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "sourceMap": false,
+        "inlineSourceMap": false,
+        "target": "ES5",
+        "experimentalDecorators": true,
+        "module": "none"
+    },
+    "exclude": ["*.js"]
+}

@@ -38,7 +38,6 @@ class RoomTest : public ::testing::Test
         delete room;
         delete comsys;
     }
-
 };
 
 TEST_F(RoomTest, joining_players_are_announced)

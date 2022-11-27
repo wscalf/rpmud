@@ -27,7 +27,7 @@ Variant::Variant(bool flg)
 
 Variant::Variant()
 {
-    type = Empty;
+
 }
 
 Variant::Variant(const Variant& other)
@@ -37,49 +37,65 @@ Variant::Variant(const Variant& other)
 
 void Variant::operator=(const Variant& other)
 {
-    type = other.type;
-    
-    switch (type)
-    {
-        case Empty:
-            break;
-        case Object:
-            object = other.object;
-            break;
-        case Text:
-            text = other.text;
-            break;
-        case Number:
-            number = other.number;
-            break;
-        case Boolean:
-            flag = other.flag;
-            break;
-    }
+    if (!(_empty = other._empty))
+        _value = other._value;
 }
 
 void Variant::operator=(MUDObject* obj)
 {
-    type = Object;
-    object = obj;
+    _empty = false;
+    _value = obj;
 }
 
 void Variant::operator=(std::string txt)
 {
-    type = Text;
-    text = txt;
+    _empty = false;
+    _value = txt;
+}
+
+void Variant::operator=(const char* txt)
+{
+    operator=(std::string(txt));
 }
 
 void Variant::operator=(float num)
 {
-    type = Number;
-    number = num;
+    _empty = false;
+    _value = num;
 }
 
 void Variant::operator=(bool flg)
 {
-    type = Boolean;
-    flag = flg;
+    _empty = false;
+    _value = flg;
+}
+
+Variant::Type Variant::getType() const
+{
+    if (_empty)
+        return Empty;
+    
+    return (Variant::Type)_value.index();
+}
+
+MUDObject* Variant::object() const
+{
+    return std::get<MUDObject*>(_value);
+}
+
+std::string Variant::text() const
+{
+    return std::get<std::string>(_value);
+}
+
+float Variant::number() const
+{
+    return std::get<float>(_value);
+}
+
+bool Variant::flag() const
+{
+    return std::get<bool>(_value);
 }
 
 Variant::~Variant()
