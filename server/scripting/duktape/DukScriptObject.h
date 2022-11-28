@@ -12,12 +12,15 @@ class DukScriptObject : public ScriptObject
     public:
         DukScriptObject(duk_context *ctx, std::string type);
         
-        void* get_reference();
+        void* get_duk_reference();
 
         void set(std::string field, Variant value) override;
         Variant get(std::string field) override;
+        Variant call(std::string method, std::initializer_list<Variant> args) override;
 
-        virtual Variant call(std::string method, std::initializer_list<Variant> args) override;
+        void setHandle(void* handle) override;
+        void* getHandle() override;
+
         ~DukScriptObject();
     private:
         void push_this();

@@ -1,4 +1,5 @@
 #include "world/MUDObject.h"
+#include "scripting/Variant.h"
 
 #include <sstream>
 
@@ -40,7 +41,7 @@ std::string MUDObject::describe()
 
 bool MUDObject::hasScript()
 {
-    return this->script != nullptr;
+    return this->_script != nullptr;
 }
 
 void MUDObject::attachScript(ScriptObject *script)
@@ -48,7 +49,10 @@ void MUDObject::attachScript(ScriptObject *script)
     if (this->hasScript())
         throw std::domain_error("A script is already present on object: " + _name);
 
-    this->script = std::unique_ptr<ScriptObject>(script);
+
+    script->setHandle(this);
+
+    this->_script = std::unique_ptr<ScriptObject>(script);
 }
 
 ScriptObject* MUDObject::getScript()
@@ -56,11 +60,11 @@ ScriptObject* MUDObject::getScript()
     if (!this->hasScript())
         throw std::domain_error("No script is present on object: " + _name);
 
-    return this->script.get();
+    return this->_script.get();
 }
 
 MUDObject::MUDObject(UUID id)
-    : script {nullptr}, _id {id}
+    : _script {nullptr}, _id {id}
 {
 
 }
@@ -72,5 +76,6 @@ bool MUDObject::operator==(const MUDObject& other)
 
 MUDObject::~MUDObject()
 {
-    
+    if (this->hasScript())
+        this->_script->setHandle(nullptr);
 }

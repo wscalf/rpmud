@@ -1,5 +1,7 @@
 class Properties
 {
+    public Room: CustomRoom;
+    
     public SimpleString: string;
     public SimpleStringWithDefault: string = "default";
     public get ReadOnlyString(): string

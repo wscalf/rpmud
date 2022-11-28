@@ -25,7 +25,7 @@ class MUDObject
 
         bool operator==(const MUDObject& other);
     protected:
-        std::unique_ptr<ScriptObject> script;
+        std::unique_ptr<ScriptObject> _script;
     private:
         UUID _id;
         std::string _name;

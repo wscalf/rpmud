@@ -2,6 +2,7 @@
 #include "scripting/duktape/DukScriptObject.h"
 #include "scripting/duktape/DukScriptSystem.h"
 #include "scripting/CommandSystem.h"
+#include "world/Room.h"
 #include "scripting/Variant.h"
 
 class DukScriptObjectTest : public ::testing::Test
@@ -15,7 +16,7 @@ class DukScriptObjectTest : public ::testing::Test
             _comsys = new CommandSystem();
             _scripting = new DukScriptSystem();
             _scripting->initialize(_comsys);
-            _scripting->load_module("scripting/tests/test_scripts/custom_types.js");
+            _scripting->load_module("scripting/tests/test_scripts/testing.js");
         }
         static void TearDownTestSuite()
         {
@@ -106,4 +107,18 @@ TEST_F(DukScriptObjectTest, method_calls)
     auto result = object->call("Sum", {(float)20, (float)22});
     EXPECT_EQ(result.getType(), Variant::Number);
     EXPECT_EQ(result.number(), 42);
+}
+
+TEST_F(DukScriptObjectTest, object_interaction)
+{
+    auto obj = std::unique_ptr<MUDObject>(new MUDObject(UUID::create()));
+    auto script = _scripting->create_object("CustomRoom");
+    obj->attachScript(script);
+
+    auto processor = _scripting->create_object("RoomProcessor");
+
+    auto result = processor->call("Process", {obj.get()}).object();
+
+    EXPECT_EQ(obj->getId(), result->getId());
+    EXPECT_EQ(3, result->getScript()->get("Count").number());
 }
