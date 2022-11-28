@@ -57,4 +57,6 @@ class Properties
     {
         return a + b;
     }
+
+    private _HiddenString: string;
 }

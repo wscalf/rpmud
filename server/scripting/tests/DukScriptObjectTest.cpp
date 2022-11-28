@@ -86,6 +86,11 @@ TEST_F(DukScriptObjectTest, property_gets_and_sets)
     EXPECT_EQ(result.getType(), Variant::Boolean);
     EXPECT_EQ(result.flag(), true);
 
+    object->set("_HiddenString", "hidden");
+    result = object->get("_HiddenString");
+    EXPECT_EQ(result.getType(), Variant::Text);
+    EXPECT_EQ(result.text(), "hidden");
+
     EXPECT_THROW(object->get("UndefinedProperty"), std::domain_error);
 }
 

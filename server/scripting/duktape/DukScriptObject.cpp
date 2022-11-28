@@ -9,13 +9,15 @@
 void* extract_duk_ptr(MUDObject* object);
 Variant get_from_context(duk_context *ctx, duk_idx_t idx);
 
-#define ASSERT_EMPTY assert (duk_get_top(this->ctx) == 0);
+#define ASSERT_EMPTY assert (duk_get_top(this->ctx) == 0) ;
 
-void dump_stack(duk_context *ctx)
+std::string get_stack(duk_context *ctx)
 {
     duk_push_context_dump(ctx);
-    std::cout << duk_get_string(ctx, -1) << std::endl;
-    duk_pop(ctx);
+    std::string ret = duk_get_string(ctx, -1);
+    duk_pop(ctx); //Pop dump
+    
+    return ret;
 }
 
 DukScriptObject::DukScriptObject(duk_context *ctx, std::string type)
@@ -128,9 +130,7 @@ Variant DukScriptObject::call(std::string method, std::initializer_list<Variant>
         num_args++;
     }
 
-    dump_stack(this->ctx);
     duk_call_prop(this->ctx, 0, num_args);
-    dump_stack(this->ctx);
 
     auto ret = get_from_context(this->ctx, 1);
 
