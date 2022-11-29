@@ -15,3 +15,7 @@ build
 
 #GoogleTest
 Temporary
+
+#tsc generated
+*.js
+*.d.ts
