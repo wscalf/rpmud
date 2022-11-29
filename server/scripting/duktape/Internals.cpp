@@ -2,6 +2,7 @@
 #include "scripting/duktape/Internals.h"
 #include "scripting/ScriptCommand.h"
 #include "scripting/CommandSystem.h"
+#include "world/MUDObject.h"
 #include "util/Log.h"
 
 int log_debug(duk_context *ctx)
@@ -40,6 +41,36 @@ int log_fatal(duk_context *ctx)
 {
     std::string message = duk_get_string(ctx, 0);
     Log::fatal(message);
+
+    return 0;
+}
+
+int object_get_id(duk_context *ctx)
+{
+    auto object = (MUDObject*)duk_get_pointer(ctx, 0);
+    auto id = object->getId();
+    
+    duk_push_string(ctx, id.toStr().c_str()); //Note: this might deallocate when leaving scope.
+
+    return 1;
+}
+
+int object_get_name(duk_context *ctx)
+{
+    auto object = (MUDObject*)duk_get_pointer(ctx, 0);
+    auto name = object->getName();
+
+    duk_push_string(ctx, name.c_str()); //Note: this might deallocate when leaving scope.
+
+    return 1;
+}
+
+int object_set_name(duk_context *ctx)
+{
+    auto object = (MUDObject*)duk_get_pointer(ctx, 0);
+    auto name = duk_get_string(ctx, 1);
+
+    object->setName(name);
 
     return 0;
 }

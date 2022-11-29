@@ -122,3 +122,26 @@ TEST_F(DukScriptObjectTest, object_interaction)
     EXPECT_EQ(obj->getId(), result->getId());
     EXPECT_EQ(3, result->getScript()->get("Count").number());
 }
+
+TEST_F(DukScriptObjectTest, world_object_id)
+{
+    auto obj = std::unique_ptr<MUDObject>(new MUDObject(UUID::create()));
+    auto script = _scripting->create_object("MUDObject");
+    obj->attachScript(script);
+
+    EXPECT_EQ(obj->getId().toStr(), script->get("Id").text());
+}
+
+
+TEST_F(DukScriptObjectTest, world_object_name)
+{
+    auto obj = std::unique_ptr<MUDObject>(new MUDObject(UUID::create()));
+    auto script = _scripting->create_object("MUDObject");
+    obj->attachScript(script);
+
+    obj->setName("Initial");
+    EXPECT_EQ("Initial", script->get("Name").text());
+
+    script->set("Name", "Updated");
+    EXPECT_EQ("Updated", obj->getName());
+}

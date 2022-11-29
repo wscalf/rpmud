@@ -21,6 +21,23 @@ var Log = (function () {
 var MUDObject = (function () {
     function MUDObject() {
     }
+    Object.defineProperty(MUDObject.prototype, "Id", {
+        get: function () {
+            return internal.object_get_id(this.native_ptr);
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Object.defineProperty(MUDObject.prototype, "Name", {
+        get: function () {
+            return internal.object_get_name(this.native_ptr);
+        },
+        set: function (value) {
+            internal.object_set_name(this.native_ptr, value);
+        },
+        enumerable: true,
+        configurable: true
+    });
     return MUDObject;
 }());
 var __extends = (this && this.__extends) || (function () {

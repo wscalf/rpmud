@@ -7,6 +7,9 @@ declare class Log {
 }
 declare class MUDObject {
     protected native_ptr: Object;
+    get Id(): string;
+    get Name(): string;
+    set Name(value: string);
 }
 declare class Player extends MUDObject {
 }
