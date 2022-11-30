@@ -7,6 +7,7 @@
 class Room;
 class ClientAdapter;
 class CommandSystem;
+class ScriptSystem;
 
 class LoginWorker
 {
@@ -28,9 +29,10 @@ class LoginProcess
 {
     public:
         void begin(ClientAdapter* adapter);
-        LoginProcess(Room& startRoom, CommandSystem& commandSystem);
+        LoginProcess(Room& startRoom, CommandSystem& commandSystem, ScriptSystem& scripting);
     private:
         void processLogin(LoginWorker* worker);
         Room& _startRoom;
         CommandSystem& _commandSystem;
+        ScriptSystem& _scripting;
 };

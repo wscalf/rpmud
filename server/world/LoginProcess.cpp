@@ -7,6 +7,7 @@
 #include "world/LoginProcess.h"
 #include "world/Player.h"
 #include "scripting/CommandSystem.h"
+#include "scripting/ScriptSystem.h"
 
 static const char* greeting = "Welcome, client!\n";
 
@@ -17,8 +18,8 @@ void LoginProcess::begin(ClientAdapter* adapter)
     worker->setCompleteHandler(std::bind(&LoginProcess::processLogin, this, std::placeholders::_1));
 }
 
-LoginProcess::LoginProcess(Room& startRoom, CommandSystem& commandSystem)
-    : _startRoom {startRoom}, _commandSystem {commandSystem}
+LoginProcess::LoginProcess(Room& startRoom, CommandSystem& commandSystem, ScriptSystem& scripting)
+    : _startRoom {startRoom}, _commandSystem {commandSystem}, _scripting {scripting}
 {
 
 }
@@ -28,6 +29,9 @@ void LoginProcess::processLogin(LoginWorker* worker)
     if (worker->isSuccessful())
     {
         auto player = std::shared_ptr<Player>(worker->createPlayer()); //TODO: track this object in some sort of manager
+        auto script = _scripting.create_object("Player");
+        player->attachScript(script);
+        
         _startRoom.add(player);
     }
 

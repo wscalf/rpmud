@@ -6,7 +6,9 @@
 
 #include "world/Room.h"
 #include "world/DirectTransition.h"
+#include "scripting/ScriptSystem.h"
 #include "util/Log.h"
+#include "World.h"
 
 void World::load(const std::string directory)
 {
@@ -64,7 +66,10 @@ void World::populateRoomsFromFile(const std::string& filePath, std::multimap<std
     for (const auto& node : nodes)
     {
         std::string id = node["id"].as<std::string>();
-        Room* room = new Room(UUID::create(), id);
+        auto room = new Room(UUID::create(), id);
+        auto script = _scripting.create_object("Room");
+
+        room->attachScript(script);
 
         room->setName(node["name"].as<std::string>());
         room->setDescription(node["description"].as<std::string>());
@@ -104,4 +109,10 @@ void World::populateRoomsFromFile(const std::string& filePath, std::multimap<std
             }
         }
     }
+}
+
+World::World(ScriptSystem& scripting)
+    : _scripting {scripting}
+{
+
 }

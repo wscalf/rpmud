@@ -29,10 +29,10 @@ void ScriptCommand::innerExecute([[maybe_unused]] std::shared_ptr<Player> player
 {
     auto cmd = std::unique_ptr<ScriptObject>(_scriptSystem.create_object(_type));
 
-    //for (auto i = parameters.begin(); i != parameters.end(); i++)
-    //    cmd->set(i->first, std::string(i->second.getText())); //Can string_view convert to cstr instead of explicitly copying?
+    for (auto i = parameters.begin(); i != parameters.end(); i++)
+        cmd->set(i->first, std::string(i->second.getText())); //Can string_view convert to cstr instead of explicitly copying?
 
-    cmd->call("Execute");
+    cmd->call("Execute", {(MUDObject*)player.get()}); //Note- this is a pointer to refcounted memory that's not being counted
 }
 
 void ScriptCommand::setUpParameterPattern()

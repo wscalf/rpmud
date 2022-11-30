@@ -177,7 +177,6 @@ void DukScriptObject::pop()
 
 DukScriptObject::~DukScriptObject()
 {
-    std::cout << "Deleting object of type: " << _type << std::endl;
     duk_push_global_stash(this->ctx);
     duk_del_prop_string(this->ctx, 0, this->id.toStr().c_str());
     pop(); //Pop global stash

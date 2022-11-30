@@ -15,4 +15,9 @@ class MUDObject
     {
         internal.object_set_name(this.native_ptr, value);
     }
+
+    public Describe(): string
+    {
+        return internal.object_describe(this.native_ptr);
+    }
 }

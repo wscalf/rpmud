@@ -5,6 +5,7 @@
 
 class Room;
 class DirectTransition;
+class ScriptSystem;
 
 class World
 {
@@ -16,12 +17,16 @@ class World
         Room& getSafeRoom() const;
 
         std::string getName() const;
+
+        World(ScriptSystem& scripting);
     private:
         void populateGlobalProperties(const std::string& filePath);
         void populateRoomsFromFile(const std::string& filePath, std::multimap<std::string, DirectTransition&>& openTransitions);
         std::string _startRoomId;
         std::string _safeRoomId;
         std::string _name;
+
+        ScriptSystem& _scripting;
 
         std::map<std::string, Room*> _rooms;
 };

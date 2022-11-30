@@ -14,7 +14,7 @@ Room::Room(UUID id, const std::string roomId)
 void Room::add(std::shared_ptr<Player> player)
 {
     sendToAll(player->getName() + " joined");
-    players.push_back(player);
+    _players.push_back(player);
     player->setRoom(this);
 
     player->send(describe());
@@ -23,18 +23,18 @@ void Room::add(std::shared_ptr<Player> player)
 void Room::remove(std::shared_ptr<Player> player)
 {
     player->setRoom(nullptr);
-    players.remove(player);
+    _players.remove(player);
     sendToAll(player->getName() + " left");
 }
 
 void Room::addLink(std::unique_ptr<Transition> transition)
 {
-    transitions.push_back(std::move(transition));
+    _transitions.push_back(std::move(transition));
 }
 
 void Room::sendToAll(std::string message)
 {
-    for (auto i = players.begin(); i != players.end(); ++i)
+    for (auto i = _players.begin(); i != _players.end(); ++i)
     {
         auto player = *i;
         player->send(message);
@@ -44,7 +44,7 @@ void Room::sendToAll(std::string message)
 Command* Room::findLocalCommand(std::string_view name)
 {
     //NOTE: if this room is destroyed while a command is in progress, we'll have a dangling pointer
-    for (auto i = transitions.begin(); i != transitions.end(); ++i)
+    for (auto i = _transitions.begin(); i != _transitions.end(); ++i)
     {
         if ((*i)->getKeyword() == name)
             return (*i).get();
@@ -53,9 +53,14 @@ Command* Room::findLocalCommand(std::string_view name)
     return nullptr;
 }
 
+std::list<std::shared_ptr<Player>> Room::getPlayers()
+{
+    return _players;
+}
+
 std::shared_ptr<Player> Room::findPlayer(std::string_view name)
 {
-    for (auto i = players.begin(); i != players.end(); ++i)
+    for (auto i = _players.begin(); i != _players.end(); ++i)
     {
         if ((*i)->getName() == name)
             return *i;
@@ -66,7 +71,7 @@ std::shared_ptr<Player> Room::findPlayer(std::string_view name)
 
 MUDObject* Room::findObject(std::string_view name)
 {
-    for (auto i = transitions.begin(); i != transitions.end(); ++i)
+    for (auto i = _transitions.begin(); i != _transitions.end(); ++i)
     {
         if ((*i)->getName() == name || (*i)->getKeyword() == name)
             return (*i).get();
@@ -90,13 +95,13 @@ std::string Room::describe()
     ret << "----------------" << std::endl;
     
     ret << "Players:" << std::endl;
-    for (auto i = players.begin(); i != players.end(); ++i)
+    for (auto i = _players.begin(); i != _players.end(); ++i)
         ret << (*i)->getName() << std::endl;
 
     ret << "----------------" << std::endl;
 
     ret << "Exits:" << std::endl;
-    for (auto i = transitions.begin(); i != transitions.end(); ++i)
+    for (auto i = _transitions.begin(); i != _transitions.end(); ++i)
         ret << (*i)->getName() << " [" << (*i)->getKeyword() << "]" << std::endl;
     ret << "----------------" << std::endl;
 

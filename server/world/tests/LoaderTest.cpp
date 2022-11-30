@@ -8,6 +8,7 @@
 #include "world/Room.h"
 #include "world/Player.h"
 #include "world/World.h"
+#include "scripting/duktape/DukScriptSystem.h"
 
 class LoaderTest : public testing::Test
 {
@@ -24,7 +25,10 @@ class LoaderTest : public testing::Test
 
         client = new FakeClientAdapter();
         player = std::make_shared<Player>(UUID::create(), "player", std::unique_ptr<ClientAdapter>(client), *comsys);
-        world = new World();
+        auto scripting = new DukScriptSystem();
+        scripting->initialize(comsys);
+
+        world = new World(*scripting);
     }
 
     void TearDown() override
